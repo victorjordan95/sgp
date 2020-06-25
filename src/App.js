@@ -1,48 +1,19 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React from 'react';
+import { Router } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+
+import Routes from './routes';
+import history from './services/history';
+
+import GlobalStyle from './styles/global';
 
 function App() {
-  const [tech, setTech] = useState([]);
-  const [newTech, setNew] = useState('');
-
-  const handleTech = useCallback(() => {
-    setTech([...tech, newTech]);
-    setNew('');
-  }, [newTech, tech]);
-
-  useEffect(() => {
-    const storageTech = localStorage.getItem('tech');
-
-    if (storageTech) {
-      setTech(JSON.parse(storageTech));
-    }
-
-    return () => {};
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('tech', JSON.stringify(tech));
-  }, [tech]);
-
-  const techSize = useMemo(() => tech.length, [tech.length]);
-
   return (
-    <>
-      <ul>
-        {tech.map(t => (
-          <li key={t}>{t}</li>
-        ))}
-      </ul>
-      <strong>Você tem {techSize} tecnologias</strong>
-      <br />
-      <input
-        type="text"
-        onChange={e => setNew(e.target.value)}
-        value={newTech}
-      />
-      <button type="button" onClick={handleTech}>
-        Add tech
-      </button>
-    </>
+    <Router history={history}>
+      <Routes />
+      <GlobalStyle />
+      <ToastContainer autoClose={3000} />
+    </Router>
   );
 }
 
