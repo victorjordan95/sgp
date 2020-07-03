@@ -40,18 +40,7 @@ const RegisterFooter = styled(Form.Row)`
 `;
 
 function Register() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [cellphone, setCellphone] = useState('');
-  const [cpf, setCPF] = useState('');
-  const [rg, setRG] = useState('');
-  const [street, setStreet] = useState('');
-  const [number, setNumber] = useState('');
-  const [complement, setComplement] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState({ label: '', value: '' });
+  const [formValues, setFormValues] = useState({});
 
   const states = [
     { label: 'Acre', value: 'AC' },
@@ -86,25 +75,23 @@ function Register() {
   const handleSubmit = async e => {
     e.preventDefault();
     const user = {
-      name,
-      email,
-      password_hash: password,
-      phone,
-      cellphone,
-      cpf,
-      rg,
-      street,
-      number,
-      complement,
-      city,
-      state: state.value,
+      name: formValues.name,
+      email: formValues.email,
+      password_hash: formValues.password_hash,
+      phone: formValues.phone,
+      cellphone: formValues.cellphone,
+      cpf: formValues.cpf,
+      rg: formValues.rg,
+      street: formValues.street,
+      number: formValues.number,
+      complement: formValues.complement,
+      city: formValues.city,
+      state: formValues.state.value,
       country: 'BR',
     };
-    console.log(user);
-    // const result = await api.post('/users', user);
-    // console.log(result);
+    const result = await api.post('/users', user);
+    console.log(result);
   };
-
   return (
     <RegisterContainer>
       <Container>
@@ -121,20 +108,24 @@ function Register() {
                     placeholder="Digite seu nome"
                     name="name"
                     required
-                    value={name}
-                    onChange={e => setName(e.target.value)}
+                    value={formValues?.name || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, name: e.target.value })
+                    }
                   />
                 </Form.Group>
 
-                <Form.Group as={Col} controlId="formBasicEmail">
+                <Form.Group as={Col}>
                   <LabelStyled>Endereço de e-mail</LabelStyled>
                   <Form.Control
                     type="email"
                     placeholder="Digite seu e-mail"
                     name="email"
                     required
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    value={formValues?.email || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, email: e.target.value })
+                    }
                   />
                 </Form.Group>
               </Form.Row>
@@ -147,8 +138,10 @@ function Register() {
                     placeholder="Digite sua senha"
                     name="password_hash"
                     required
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    value={formValues?.password || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, password: e.target.value })
+                    }
                   />
                 </Form.Group>
 
@@ -158,8 +151,10 @@ function Register() {
                     type="password"
                     placeholder="Confirmação de senha"
                     required
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    value={formValues?.password || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, password: e.target.value })
+                    }
                   />
                 </Form.Group>
               </Form.Row>
@@ -173,8 +168,10 @@ function Register() {
                     type="text"
                     placeholder="Digite seu telefone"
                     name="phone"
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
+                    value={formValues?.phone || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, phone: e.target.value })
+                    }
                   />
                 </Form.Group>
 
@@ -186,8 +183,13 @@ function Register() {
                     type="text"
                     placeholder="Digite seu celular"
                     name="cellphone"
-                    value={cellphone}
-                    onChange={e => setCellphone(e.target.value)}
+                    value={formValues?.cellphone || ''}
+                    onChange={e =>
+                      setFormValues({
+                        ...formValues,
+                        cellphone: e.target.value,
+                      })
+                    }
                   />
                 </Form.Group>
               </Form.Row>
@@ -202,8 +204,10 @@ function Register() {
                     placeholder="Digite seu CPF"
                     name="cpf"
                     required
-                    value={cpf}
-                    onChange={e => setCPF(e.target.value)}
+                    value={formValues?.cpf || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, cpf: e.target.value })
+                    }
                   />
                 </Form.Group>
 
@@ -216,8 +220,10 @@ function Register() {
                     placeholder="Digite seu RG"
                     name="rg"
                     required
-                    value={rg}
-                    onChange={e => setRG(e.target.value)}
+                    value={formValues?.rg || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, rg: e.target.value })
+                    }
                   />
                 </Form.Group>
               </Form.Row>
@@ -230,8 +236,10 @@ function Register() {
                     placeholder="Digite sua rua"
                     name="street"
                     required
-                    value={street}
-                    onChange={e => setStreet(e.target.value)}
+                    value={formValues?.street || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, street: e.target.value })
+                    }
                   />
                 </Form.Group>
 
@@ -242,8 +250,10 @@ function Register() {
                     placeholder="Digite o número"
                     name="number"
                     required
-                    value={number}
-                    onChange={e => setNumber(e.target.value)}
+                    value={formValues?.number || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, number: e.target.value })
+                    }
                   />
                 </Form.Group>
 
@@ -253,8 +263,13 @@ function Register() {
                     type="text"
                     placeholder="Digite o complemento"
                     name="complement"
-                    value={complement}
-                    onChange={e => setComplement(e.target.value)}
+                    value={formValues?.complement || ''}
+                    onChange={e =>
+                      setFormValues({
+                        ...formValues,
+                        complement: e.target.value,
+                      })
+                    }
                   />
                 </Form.Group>
               </Form.Row>
@@ -266,8 +281,10 @@ function Register() {
                     type="text"
                     placeholder="Digite sua cidade"
                     name="city"
-                    value={city}
-                    onChange={e => setCity(e.target.value)}
+                    value={formValues?.city || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, city: e.target.value })
+                    }
                   />
                 </Form.Group>
 
@@ -275,8 +292,8 @@ function Register() {
                   <LabelStyled>Estado</LabelStyled>
                   <Select
                     options={states}
-                    value={state}
-                    onChange={e => setState(e)}
+                    value={formValues?.state}
+                    onChange={e => setFormValues({ ...formValues, state: e })}
                     placeholder="Selecione seu estado"
                   />
                 </Form.Group>

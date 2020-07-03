@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Form, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import AwesomeSlider from 'react-awesome-slider';
+import { toast } from 'react-toastify';
 import withAutoplay from 'react-awesome-slider/dist/autoplay';
 import LabelStyled from '../../styles/LabelForm';
 import { validateEmail } from '../../utils/formValidator';
+
+import userContext from '../../store/UserContext';
+
+import api from '../../services/api';
 
 import 'react-awesome-slider/dist/styles.css';
 
@@ -103,9 +108,9 @@ const LoginFormStyled = styled.section`
   flex-flow: column wrap;
   justify-content: center;
   width: 100vw;
+
   @media screen and (min-width: 1000px) {
     width: 50vw;
-
   }
 
   > .title {
@@ -123,7 +128,7 @@ const LoginFormStyled = styled.section`
     max-width: 433px;
     width: 100%;
 
-    button[type=submit] {
+    button[type='submit'] {
       margin-top: 20px;
     }
   }
@@ -134,11 +139,13 @@ const LoginFormStyled = styled.section`
     margin-bottom: 30px;
     text-decoration: none;
     margin-right: 16px;
+
     @media screen and (min-width: 768px) {
       margin-right: 0;
     }
+
     &:hover {
-      color: darken(rgba(112, 112, 112, 1), 15%)
+      color: darken(rgba(112, 112, 112, 1), 15%);
     }
   }
 
@@ -149,6 +156,7 @@ const LoginFormStyled = styled.section`
     overflow: hidden;
     text-align: center;
     width: 100%;
+
     @media screen and (min-width: 768px) {
       max-width: 433px;
     }
@@ -156,12 +164,13 @@ const LoginFormStyled = styled.section`
     &:before,
     &:after {
       background-color: rgba(112, 112, 112, 1);
-      content: "";
+      content: '';
       display: inline-block;
       height: 1px;
       position: relative;
       vertical-align: middle;
       width: 40%;
+
       @media screen and (min-width: 768px) {
         width: 50%;
       }
@@ -171,6 +180,7 @@ const LoginFormStyled = styled.section`
       right: 0.5em;
       margin-left: -50%;
     }
+
     &:after {
       left: 0.5em;
       margin-right: -50%;
@@ -182,40 +192,47 @@ const LoginFormStyled = styled.section`
     font-size: 1rem;
     margin-top: 40px;
     text-align: center;
-
   }
-}
 
-.slide-content {
-  @media screen and (min-width: 1000px) {
-    display: flex;
-    width: 50vw;
+  .slide-content {
+    @media screen and (min-width: 1000px) {
+      display: flex;
+      width: 50vw;
+    }
   }
-}
+
+  button:disabled {
+    background-color: #009688;
+    border-color: #009688;
+    cursor: not-allowed;
+  }
 `;
 
-function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function Login(props) {
+  const currentlyUser = useContext(userContext);
+
+  const [formValues, setFormValues] = useState({});
   const [error, setError] = useState([]);
-  const [hasEmpty, setHasEmpty] = useState(false);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    setHasEmpty(false);
-
-    if (!email || !password) {
-      setHasEmpty(true);
-      return;
-    }
 
     setError({});
-    if (!validateEmail(email)) {
+    if (!validateEmail(formValues.email)) {
       setError(...error, { email: 'Email address is invalid' });
       return;
     }
 
-    window.alert('Logged!');
+    try {
+      const loggedUser = await api.post('/session', formValues);
+      localStorage.setItem('sgp-token', loggedUser.data.token);
+      props.history.push('/dashboard');
+
+      const usarData = await api.get(`/users/${loggedUser.data.user.id}`);
+      currentlyUser.handleUserContext(usarData.data);
+    } catch (err) {
+      toast.error(err?.response?.data?.error);
+    }
   };
 
   return (
@@ -281,8 +298,10 @@ function Login() {
               placeholder="Digite seu e-mail"
               name="email"
               required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={formValues?.email || ''}
+              onChange={e =>
+                setFormValues({ ...formValues, email: e.target.value })
+              }
             />
           </Form.Group>
 
@@ -291,10 +310,12 @@ function Login() {
             <Form.Control
               type="password"
               placeholder="Digite sua senha"
-              name="password_hash"
+              name="password"
               required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              value={formValues?.password || ''}
+              onChange={e =>
+                setFormValues({ ...formValues, password: e.target.value })
+              }
             />
           </Form.Group>
 
@@ -302,7 +323,11 @@ function Login() {
             Esqueceu sua senha?
           </a>
 
-          <button type="submit" className="btn btn-primary w-100">
+          <button
+            type="submit"
+            className="btn btn-primary w-100"
+            disabled={!formValues?.email || !formValues?.password}
+          >
             Entrar
           </button>
         </Form>
