@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import styled from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 
 import userContext from '../../store/UserContext';

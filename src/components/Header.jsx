@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { MdMenu } from 'react-icons/md';
 import { FiPieChart, FiUser, FiCalendar, FiSettings } from 'react-icons/fi';
-
 import { NavLink } from 'react-router-dom';
 
 import styled from 'styled-components';
+import userContext from '../store/UserContext';
 
 const StyledNav = styled.nav`
   box-shadow: 0 0px 4px 0px rgba(66, 66, 66, 0.28);
@@ -112,7 +112,10 @@ const StyledAside = styled.aside`
 `;
 
 function Dashboard() {
+  const currentlyUser = useContext(userContext);
+
   const [toggle, setToggle] = useState(false);
+
   return (
     <>
       <StyledNav>
@@ -123,7 +126,7 @@ function Dashboard() {
           <h3>Saluti</h3>
         </div>
         <div className="nav-actions">
-          Nome do usuário
+          {currentlyUser?.user?.name}
           <Dropdown>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
               Dropdown Button
