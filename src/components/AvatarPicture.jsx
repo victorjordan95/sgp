@@ -1,0 +1,28 @@
+import React from 'react';
+import styled from 'styled-components';
+
+const StyledAvatar = styled.img`
+  border-radius: 50%;
+  margin: 0 auto;
+  &.small {
+    border: 2px solid #009688;
+    height: 50px;
+    width: 50px;
+  }
+  &.medium {
+    border: 5px solid #009688;
+    height: 150px;
+    width: 150px;
+  }
+  &.large {
+    border: 5px solid #009688;
+    height: 200px;
+    width: 200px;
+  }
+`;
+
+function AvatarPicture({ path, description, size }) {
+  return <StyledAvatar src={path} alt={description} className={size} />;
+}
+
+export default AvatarPicture;

@@ -7,6 +7,7 @@ import 'moment/locale/pt-br';
 
 import userContext from '../../store/UserContext';
 import api from '../../services/api';
+import authToken from '../../utils/authToken';
 
 import Header from '../../components/Header';
 
@@ -63,7 +64,7 @@ function Agenda() {
   const [schedules, setSchedules] = useState();
 
   const fetchMonthSchedules = async date => {
-    const { data } = await api.get(`/schedule?date=${date}`);
+    const { data } = await api.get(`/schedule?date=${date}`, authToken());
     const formattedDate = data.map(currentDate => {
       return {
         ...currentDate,

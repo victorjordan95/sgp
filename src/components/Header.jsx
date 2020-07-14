@@ -5,26 +5,35 @@ import { FiPieChart, FiUser, FiCalendar, FiSettings } from 'react-icons/fi';
 import { NavLink } from 'react-router-dom';
 
 import styled from 'styled-components';
+import AvatarPicture from './AvatarPicture';
+
 import userContext from '../store/UserContext';
 
 const StyledNav = styled.nav`
+  background: #fff;
   box-shadow: 0 0px 4px 0px rgba(66, 66, 66, 0.28);
   display: flex;
   justify-content: space-between;
-  padding: 16px 32px;
+  padding: 16px;
+  position: fixed;
   width: 100vw;
+  z-index: 10;
+  @media screen and (min-width: 1024px) {
+    padding: 16px 32px;
+  }
 
   .nav-logo {
-    align-items: flex-start;
+    align-items: center;
     display: flex;
     justify-content: space-between;
     width: 130px;
 
     button {
+      align-self: flex-start;
       background: none;
       border: 0;
       position: relative;
-      top: 4px;
+      top: 8px;
     }
   }
 
@@ -32,33 +41,58 @@ const StyledNav = styled.nav`
     align-items: center;
     display: flex;
     justify-content: space-between;
-    width: 25%;
+    width: auto;
+
+    .dropdown {
+      margin-left: 10px;
+
+      .btn {
+        color: #000;
+        background-color: #ffffff;
+        border-color: #ffffff;
+      }
+    }
   }
 `;
 
 const StyledAside = styled.aside`
+  background: #fff;
+  box-shadow: 0 0 6px 0px #424242;
   display: inline-flex;
   height: 100vh;
   padding-top: 32px;
   position: absolute;
   transition: all ease 0.5s;
+  position: fixed;
+  top: 80px;
   width: 210px;
+  z-index: 5;
 
   + main {
     display: inline-flex;
-    height: 100vh;
-    transform: translateX(240px);
-    padding: 32px 0;
+    margin-bottom: 48px;
+    min-height: 100vh;
+    padding: 32px 8px;
+    padding-right: 12px;
     transition: all ease 0.5s;
-    width: calc(100vw - 250px);
+    top: 80px;
+    position: relative;
+    @media screen and (min-width: 1024px) {
+      padding: 32px 24px;
+      transform: translateX(240px);
+      width: calc(100vw - 250px);
+    }
   }
 
   &.toggled {
-    transform: translateX(-210px);
+    transform: translateX(-220px);
     + main {
-      transform: translateX(0);
-      padding: 32px 24px;
+      padding: 32px 8px;
       width: calc(100vw);
+      @media screen and (min-width: 1024px) {
+        padding: 32px 24px;
+        transform: translateX(0);
+      }
     }
   }
 
@@ -111,7 +145,7 @@ const StyledAside = styled.aside`
   }
 `;
 
-function Dashboard() {
+function Header() {
   const currentlyUser = useContext(userContext);
 
   const [toggle, setToggle] = useState(false);
@@ -126,16 +160,18 @@ function Dashboard() {
           <h3>Saluti</h3>
         </div>
         <div className="nav-actions">
-          {currentlyUser?.user?.name}
+          <AvatarPicture
+            path={currentlyUser?.user?.avatar?.url}
+            size="small"
+            description="teste"
+          />
           <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
-              Dropdown Button
-            </Dropdown.Toggle>
+            <Dropdown.Toggle>{currentlyUser?.user?.name}</Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+              <Dropdown.Item href="/" onClick={() => currentlyUser.logout()}>
+                Sair
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </div>
@@ -183,4 +219,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Header;

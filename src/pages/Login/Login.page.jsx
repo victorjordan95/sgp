@@ -12,6 +12,7 @@ import { validateEmail } from '../../utils/formValidator';
 import userContext from '../../store/UserContext';
 
 import api from '../../services/api';
+import authToken from '../../utils/authToken';
 
 import 'react-awesome-slider/dist/styles.css';
 
@@ -228,8 +229,12 @@ function Login(props) {
       localStorage.setItem('sgp-token', loggedUser.data.token);
       props.history.push('/dashboard');
 
-      const usarData = await api.get(`/users/${loggedUser.data.user.id}`);
-      currentlyUser.handleUserContext(usarData.data);
+      const userData = await api.get(
+        `/users/${loggedUser.data.user.id}`,
+        authToken()
+      );
+      console.log(userData);
+      currentlyUser.handleUserContext(userData.data);
     } catch (err) {
       toast.error(err?.response?.data?.error);
     }
