@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import defaultPicture from '../assets/img/default-picture.png';
+
 const StyledAvatar = styled.img`
   border-radius: 50%;
   margin: 0 auto;
@@ -22,7 +24,13 @@ const StyledAvatar = styled.img`
 `;
 
 function AvatarPicture({ path, description, size }) {
-  return <StyledAvatar src={path} alt={description} className={size} />;
+  return (
+    <StyledAvatar
+      src={path || defaultPicture}
+      alt={description}
+      className={size}
+    />
+  );
 }
 
 export default AvatarPicture;

@@ -50,9 +50,26 @@ function Profile() {
     if (profilePhoto) {
       const data = new FormData();
       data.append('file', profilePhoto);
-      profilePicture = await api.post('/files', data, authToken());
-      setFormValues({ ...formValues, avatar_id: profilePicture.data.id });
+
+      if (currentlyUser?.user?.avatar?.id) {
+        data.append('id', currentlyUser.user.avatar.id);
+        profilePicture = await api.put('/files', data, authToken());
+        await api.put(
+          '/users',
+          { avatar_id: profilePicture.data.id },
+          authToken()
+        );
+      } else {
+        profilePicture = await api.post('/files', data, authToken());
+        await api.put(
+          '/users',
+          { avatar_id: profilePicture.data.id },
+          authToken()
+        );
+      }
+      setLoading(false);
     }
+
     try {
       await api.put('/users', removeSpecial(formValues), authToken());
       toast.success('Perfil salvo com sucesso!');
