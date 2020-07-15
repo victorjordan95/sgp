@@ -39,8 +39,27 @@ function Profile() {
   const currentlyUser = useContext(userContext);
 
   const [formValues, setFormValues] = useState({});
-  const [profilePhoto, setProfilePhoto] = useState();
+  const [profilePhoto, setProfilePhoto] = useState('');
+  const [newPicture, setNewPicture] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleProfile = e => {
+    setProfilePhoto(e.target.files[0]);
+    const file = e.target.files[0];
+
+    const reader = new FileReader();
+    reader.addEventListener(
+      'load',
+      () => {
+        setNewPicture(reader.result);
+      },
+      false
+    );
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async e => {
     setLoading(true);
@@ -97,7 +116,7 @@ function Profile() {
                 <Form onSubmit={handleSubmit}>
                   <Form.Row>
                     <AvatarPicture
-                      path={currentlyUser?.user?.avatar?.url}
+                      path={newPicture || currentlyUser?.user?.avatar?.url}
                       size="medium"
                       description="teste"
                     />
@@ -109,7 +128,7 @@ function Profile() {
                         type="file"
                         name="profile"
                         accept="image/*"
-                        onChange={e => setProfilePhoto(e.target.files[0])}
+                        onChange={e => handleProfile(e)}
                       />
                     </Form.Group>
                   </ChangeFormRow>

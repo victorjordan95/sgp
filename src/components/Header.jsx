@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import AvatarPicture from './AvatarPicture';
 
 import userContext from '../store/UserContext';
+import Roles from '../enums/Roles.enum';
 
 const StyledNav = styled.nav`
   background: #fff;
@@ -71,6 +72,7 @@ const StyledAside = styled.aside`
   + main {
     display: inline-flex;
     margin-bottom: 48px;
+    height: 100%;
     min-height: 100vh;
     padding: 32px 8px;
     padding-right: 12px;
@@ -147,6 +149,7 @@ const StyledAside = styled.aside`
 
 function Header() {
   const currentlyUser = useContext(userContext);
+  const userRole = currentlyUser?.user?.Role?.role;
 
   const [toggle, setToggle] = useState(false);
 
@@ -190,10 +193,18 @@ function Header() {
 
           <span className="aside-link-separator">Agenda</span>
           <ul>
+            {userRole === Roles.DOCTOR && (
+              <li>
+                <NavLink to="/agenda" activeClassName="active">
+                  <FiCalendar size={24} />
+                  <span className="aside-page-name">Agenda</span>
+                </NavLink>
+              </li>
+            )}
             <li>
-              <NavLink to="/agenda" activeClassName="active">
+              <NavLink to="/minhas-consultas" activeClassName="active">
                 <FiCalendar size={24} />
-                <span className="aside-page-name">Agenda</span>
+                <span className="aside-page-name">Minhas consultas</span>
               </NavLink>
             </li>
             <li>

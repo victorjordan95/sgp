@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import InputMask from 'react-input-mask';
 import Select from 'react-select';
-
-import LabelStyled from '../../styles/LabelForm';
+import Loader from '../../components/Loader';
 
 import api from '../../services/api';
 
-import BgImg from '../../assets/img/background-register.png';
-
 import stateValues from '../../utils/brStatesValues';
+import { removeSpecial } from '../../utils/removeSpecialCharacters';
+
+import LabelStyled from '../../styles/LabelForm';
+
+import BgImg from '../../assets/img/background-register.png';
 
 const RegisterContainer = styled.main`
   background-image: url(${BgImg});
@@ -41,15 +44,17 @@ const RegisterFooter = styled(Form.Row)`
   margin: 48px 0 24px;
 `;
 
-function Register() {
+function Register(props) {
   const [formValues, setFormValues] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async e => {
     e.preventDefault();
+
     const user = {
       name: formValues.name,
       email: formValues.email,
-      password_hash: formValues.password_hash,
+      password: formValues.password_hash,
       phone: formValues.phone,
       cellphone: formValues.cellphone,
       cpf: formValues.cpf,
@@ -61,10 +66,19 @@ function Register() {
       state: formValues.state.value,
       country: 'BR',
     };
-    const result = await api.post('/users', user);
-    console.log(result);
+
+    try {
+      await api.post('/users', removeSpecial(user));
+      toast.success('Usuário criado com sucesso!');
+      props.history.push('/');
+    } catch (err) {
+      toast.error(err?.response?.data?.error);
+    }
+    setLoading(false);
   };
-  return (
+  return loading ? (
+    <Loader />
+  ) : (
     <RegisterContainer>
       <Container>
         <Row>
@@ -108,11 +122,14 @@ function Register() {
                   <Form.Control
                     type="password"
                     placeholder="Digite sua senha"
-                    name="password_hash"
+                    name="password"
                     required
                     value={formValues?.password || ''}
                     onChange={e =>
-                      setFormValues({ ...formValues, password: e.target.value })
+                      setFormValues({
+                        ...formValues,
+                        password: e.target.value,
+                      })
                     }
                   />
                 </Form.Group>
@@ -123,9 +140,12 @@ function Register() {
                     type="password"
                     placeholder="Confirmação de senha"
                     required
-                    value={formValues?.password || ''}
+                    value={formValues?.passwordConfirm || ''}
                     onChange={e =>
-                      setFormValues({ ...formValues, password: e.target.value })
+                      setFormValues({
+                        ...formValues,
+                        passwordConfirm: e.target.value,
+                      })
                     }
                   />
                 </Form.Group>
@@ -202,10 +222,10 @@ function Register() {
 
               <Form.Row>
                 <Form.Group as={Col}>
-                  <LabelStyled>Rua</LabelStyled>
+                  <LabelStyled>Logradouro</LabelStyled>
                   <Form.Control
                     type="text"
-                    placeholder="Digite sua rua"
+                    placeholder="Digite seu logradouro"
                     name="street"
                     required
                     value={formValues?.street || ''}

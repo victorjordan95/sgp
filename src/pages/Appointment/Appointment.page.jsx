@@ -8,14 +8,13 @@ import React, {
 import styled from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { toast } from 'react-toastify';
 import moment from 'moment';
 import 'moment/locale/pt-br';
+import { toast } from 'react-toastify';
 
 import userContext from '../../store/UserContext';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
-import Roles from '../../enums/Roles.enum';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
@@ -52,10 +51,10 @@ const localizer = momentLocalizer(moment);
 
 const siteMap = [
   { path: 'dashboard', name: 'Início' },
-  { path: 'agenda', name: 'Agenda' },
+  { path: 'minhas-consultas', name: 'Minhas consultas' },
 ];
 
-function Agenda() {
+function Appointment() {
   const currentlyUser = useContext(userContext);
 
   const messages = useMemo(
@@ -81,28 +80,23 @@ function Agenda() {
   const [schedules, setSchedules] = useState();
   const [loading, setLoading] = useState(false);
 
-  const fetchMonthSchedules = useCallback(
-    async date => {
-      if (currentlyUser?.user?.Role?.role === Roles.DOCTOR) {
-        setLoading(true);
-        try {
-          const { data } = await api.get(`/schedule?date=${date}`, authToken());
-          const formattedDate = data.map(currentDate => {
-            return {
-              ...currentDate,
-              start: moment(currentDate.start).toDate(),
-              end: moment(currentDate.end).toDate(),
-            };
-          });
-          setSchedules(formattedDate);
-        } catch (err) {
-          toast.error(err?.response?.data?.error);
-        }
-        setLoading(false);
-      }
-    },
-    [currentlyUser]
-  );
+  const fetchMonthSchedules = useCallback(async date => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/appointments`, authToken());
+      const formattedDate = data.map(currentDate => {
+        return {
+          ...currentDate,
+          start: moment(currentDate.start).toDate(),
+          end: moment(currentDate.end).toDate(),
+        };
+      });
+      setSchedules(formattedDate);
+    } catch (err) {
+      toast.error(err?.response?.data?.error);
+    }
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     fetchMonthSchedules(new Date());
@@ -144,4 +138,4 @@ function Agenda() {
   );
 }
 
-export default Agenda;
+export default Appointment;

@@ -8,7 +8,7 @@ function Dashboard({ siteMap }) {
       <Row>
         <Col xs={12}>
           <nav aria-label="breadcrumb">
-            <ol className="breadcrumb">
+            <ol className="breadcrumb mb-5">
               {siteMap.map((breadcrumb, key) => {
                 if (key + 1 === siteMap.length) {
                   return (
