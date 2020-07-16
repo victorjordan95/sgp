@@ -36,7 +36,7 @@ function App() {
     const token = localStorage.getItem('sgp-token');
     if (token) {
       try {
-        (async function anyNameFunction() {
+        (async function fetchUser() {
           const user = await api.post('/sessionToken', {
             session_token: token,
           });

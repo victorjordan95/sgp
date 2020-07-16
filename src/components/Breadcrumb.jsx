@@ -1,13 +1,20 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
+import styled from 'styled-components';
+
+const StyledBreadcrumb = styled.nav`
+  .breadcrumb {
+    background-color: #fafafa;
+  }
+`;
 
 function Dashboard({ siteMap }) {
   return (
     <Container fluid>
       <Row>
         <Col xs={12}>
-          <nav aria-label="breadcrumb">
+          <StyledBreadcrumb aria-label="breadcrumb">
             <ol className="breadcrumb mb-5">
               {siteMap.map((breadcrumb, key) => {
                 if (key + 1 === siteMap.length) {
@@ -29,7 +36,7 @@ function Dashboard({ siteMap }) {
                 );
               })}
             </ol>
-          </nav>
+          </StyledBreadcrumb>
         </Col>
       </Row>
     </Container>

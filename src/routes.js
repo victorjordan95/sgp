@@ -6,6 +6,7 @@ import Appointment from './pages/Appointment/Appointment.page';
 import Dashboard from './pages/Dashboard/Dashboard.page';
 import Login from './pages/Login/Login.page';
 import Profile from './pages/Profile/Profile.page';
+import Patients from './pages/Patients/Patients.page';
 import Register from './pages/Register/Register.page';
 
 export default function Routes() {
@@ -14,10 +15,11 @@ export default function Routes() {
       <Switch>
         <Route path="/" exact component={Login} />
         <Route path="/agenda" component={Agenda} />
-        <Route path="/minhas-consultas" component={Appointment} />
         <Route path="/cadastro" component={Register} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/meu-perfil" component={Profile} />
+        <Route path="/minhas-consultas" component={Appointment} />
+        <Route path="/pacientes" component={Patients} />
       </Switch>
     </BrowserRouter>
   );

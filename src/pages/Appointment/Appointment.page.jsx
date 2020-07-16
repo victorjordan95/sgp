@@ -19,6 +19,7 @@ import authToken from '../../utils/authToken';
 import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
+import PageTitle from '../../components/PageTitle';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -117,6 +118,11 @@ function Appointment() {
         <Container fluid>
           <Row>
             <Breadcrumb siteMap={siteMap} />
+            <Col xs={12}>
+              <PageTitle
+                headerTitle={`Bem-vindo ${currentlyUser?.user?.name}`}
+              />
+            </Col>
             <Col xs={12}>
               {schedules && (
                 <StyledCalendar

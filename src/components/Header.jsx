@@ -1,7 +1,16 @@
 import React, { useState, useContext } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { MdMenu } from 'react-icons/md';
-import { FiPieChart, FiUser, FiCalendar, FiSettings } from 'react-icons/fi';
+import {
+  FiPieChart,
+  FiUser,
+  FiCalendar,
+  FiSettings,
+  FiUsers,
+} from 'react-icons/fi';
+import { AiFillMedicineBox } from 'react-icons/ai';
+import { FaStethoscope } from 'react-icons/fa';
+import { BsNewspaper } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
 
 import styled from 'styled-components';
@@ -204,13 +213,37 @@ function Header() {
             <li>
               <NavLink to="/minhas-consultas" activeClassName="active">
                 <FiCalendar size={24} />
-                <span className="aside-page-name">Minhas consultas</span>
+                <span className="aside-page-name">Agendamentos</span>
               </NavLink>
             </li>
             <li>
-              <NavLink to="/pacientes" activeClassName="active">
-                <FiUser size={24} />
-                <span className="aside-page-name">Pacientes</span>
+              <NavLink to="/exames" activeClassName="active">
+                <BsNewspaper size={24} />
+                <span className="aside-page-name">Exames</span>
+              </NavLink>
+            </li>
+          </ul>
+
+          <span className="aside-link-separator">Usuários</span>
+          <ul>
+            {!(userRole === Roles.PACIENT) && (
+              <li>
+                <NavLink to="/pacientes" activeClassName="active">
+                  <FiUser size={24} />
+                  <span className="aside-page-name">Pacientes</span>
+                </NavLink>
+              </li>
+            )}
+            <li>
+              <NavLink to="/medicos" activeClassName="active">
+                <FaStethoscope size={24} />
+                <span className="aside-page-name">Médicos</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/funcionarios" activeClassName="active">
+                <FiUsers size={24} />
+                <span className="aside-page-name">Funcionários</span>
               </NavLink>
             </li>
           </ul>
