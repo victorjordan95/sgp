@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { FiSearch } from 'react-icons/fi';
-import styled from 'styled-components';
 
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import ExpandedComponent from '../../components/ExpandedComponent';
+import SearchHeaderTable from '../../components/SearchHeaderTable';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
 import PageTitle from '../../components/PageTitle';
@@ -36,23 +35,10 @@ const columns = [
   },
 ];
 
-const SearchHeader = styled.div`
-  align-items: center;
-  display: flex;
-  left: -16px;
-  position: relative;
-  select {
-    border-radius: 4px 0 0 4px;
-  }
-  input {
-    border-radius: 0;
-    margin: 0;
-    min-width: 400px;
-  }
-  .btn {
-    border-radius: 0 4px 4px 0;
-  }
-`;
+const selectOptions = [
+  { value: 'name', label: 'Descrição' },
+  { value: 'code', label: 'Código' },
+];
 
 const fetchCids = async (page = 1, type = '', name = '') => {
   let findUrl = '';
@@ -121,36 +107,12 @@ const Doctors = () => {
                 expandableRows
                 subHeader
                 subHeaderComponent={
-                  <SearchHeader>
-                    <select
-                      className="form-control"
-                      value={search?.option}
-                      onChange={e =>
-                        setSearch({ ...search, option: e.target.value })
-                      }
-                    >
-                      <option value="name">Descrição</option>
-                      <option value="code">Código</option>
-                    </select>
-                    <input
-                      placeholder="Selecione por qual coluna deseja filtrar"
-                      className="form-control"
-                      value={search?.value}
-                      onChange={e =>
-                        setSearch({
-                          ...search,
-                          searchValue: e.target.value,
-                        })
-                      }
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={searchCid}
-                    >
-                      <FiSearch size={24} />
-                    </button>
-                  </SearchHeader>
+                  <SearchHeaderTable
+                    search={search}
+                    setSearch={setSearch}
+                    selectOptions={selectOptions}
+                    search={searchCid}
+                  />
                 }
                 highlightOnHover
                 expandableRowsComponent={<ExpandedComponent />}
