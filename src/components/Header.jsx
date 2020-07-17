@@ -8,7 +8,7 @@ import {
   FiSettings,
   FiUsers,
 } from 'react-icons/fi';
-import { FaStethoscope } from 'react-icons/fa';
+import { FaStethoscope, FaBookMedical } from 'react-icons/fa';
 import { BsNewspaper } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
 
@@ -211,6 +211,12 @@ function Header() {
               <NavLink to="/dashboard" activeClassName="active">
                 <FiPieChart size={24} />
                 <span className="aside-page-name">Dashboard</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/cid" activeClassName="active">
+                <FaBookMedical size={24} />
+                <span className="aside-page-name">CID</span>
               </NavLink>
             </li>
           </ul>

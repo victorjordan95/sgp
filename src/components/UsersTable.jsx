@@ -19,6 +19,9 @@ function UsersTable({
   handlePageChange,
   amountPerPage = 10,
   expandableRows = false,
+  subHeader = false,
+  subHeaderComponent,
+  expandableRowsComponent,
 }) {
   return (
     <DataTable
@@ -35,6 +38,11 @@ function UsersTable({
       paginationTotalRows={data?.count}
       onChangePage={handlePageChange}
       paginationPerPage={amountPerPage}
+      subHeader={subHeader}
+      subHeaderComponent={subHeaderComponent}
+      subHeaderAlign="left"
+      expandableRowsComponent
+      expandableRowsComponent={expandableRowsComponent}
     />
   );
 }

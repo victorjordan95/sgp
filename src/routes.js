@@ -16,6 +16,7 @@ export default function Routes() {
   return (
     <BrowserRouter>
       <Switch>
+        <Route path="/" exact component={Login} />
         <Route path="/agenda" component={Agenda} />
         <Route path="/cadastro" component={Register} />
         <Route path="/cid" component={Cid} />

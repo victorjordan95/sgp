@@ -31,5 +31,4 @@ export default createGlobalStyle`
       color: #004d40;
     }
   }
-
 `;
