@@ -44,7 +44,6 @@ function App() {
             `/users/${user.data.user.user_id}`,
             authToken()
           );
-          console.log(userData);
           handleUserContext(userData.data);
         })();
       } catch (err) {

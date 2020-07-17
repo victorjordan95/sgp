@@ -13,44 +13,29 @@ import UsersTable from '../../components/UsersTable';
 
 const siteMap = [
   { path: 'dashboard', name: 'Início' },
-  { path: 'pacientes', name: 'Pacientes' },
+  {
+    path: 'cid',
+    name: 'Classificação Internacional de Doenças',
+  },
 ];
 
 const columns = [
   {
-    name: 'Nome',
+    name: 'Código',
+    selector: 'code',
+    sortable: true,
+  },
+  {
+    name: 'Descrição',
     selector: 'name',
     sortable: true,
-  },
-  {
-    name: 'E-mail',
-    selector: 'email',
-    sortable: true,
-    right: true,
-  },
-  {
-    name: 'CPF',
-    selector: 'cpf',
-    sortable: true,
-    right: true,
-  },
-  {
-    name: 'RG',
-    selector: 'rg',
-    sortable: true,
-    right: true,
-  },
-  {
-    name: 'Cidade',
-    selector: 'address_pk.city',
-    sortable: true,
-    right: true,
+    left: true,
   },
 ];
 
-const fetchUsers = async (page = 1) => {
+const fetchCids = async (page = 1) => {
   try {
-    const result = await api.get(`/patients?page=${page}`, authToken());
+    const result = await api.get(`/cid?page=${page}`, authToken());
     return result.data;
   } catch (err) {
     toast.error(err?.response?.data?.error);
@@ -58,21 +43,21 @@ const fetchUsers = async (page = 1) => {
   return false;
 };
 
-const Patients = () => {
-  const [users, setUsers] = useState();
+const Doctors = () => {
+  const [cid, setCids] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    fetchUsers().then(res => {
-      setUsers(res);
+    fetchCids().then(res => {
+      setCids(res);
       setLoading(false);
     });
   }, []);
 
   const handlePageChange = e => {
-    fetchUsers(e).then(res => {
-      setUsers(res);
+    fetchCids(e).then(res => {
+      setCids(res);
       setLoading(false);
     });
   };
@@ -87,13 +72,14 @@ const Patients = () => {
           <Row>
             <Breadcrumb siteMap={siteMap} />
             <Col xs={12}>
-              <PageTitle headerTitle="Pacientes" />
+              <PageTitle headerTitle="Classificação Internacional de Doenças" />
             </Col>
             <Col xs={12}>
               <UsersTable
-                data={users}
+                data={cid}
                 columns={columns}
                 handlePageChange={handlePageChange}
+                amountPerPage={50}
               />
             </Col>
           </Row>
@@ -103,4 +89,4 @@ const Patients = () => {
   );
 };
 
-export default Patients;
+export default Doctors;

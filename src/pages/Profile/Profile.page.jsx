@@ -90,7 +90,10 @@ function Profile() {
     }
 
     try {
-      await api.put('/users', removeSpecial(formValues), authToken());
+      const newValues = formValues.state.value
+        ? { ...formValues, state: formValues.state.value }
+        : formValues;
+      await api.put('/users', removeSpecial(newValues), authToken());
       toast.success('Perfil salvo com sucesso!');
       setLoading(false);
     } catch (err) {

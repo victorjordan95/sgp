@@ -13,7 +13,7 @@ import UsersTable from '../../components/UsersTable';
 
 const siteMap = [
   { path: 'dashboard', name: 'Início' },
-  { path: 'pacientes', name: 'Pacientes' },
+  { path: 'funcionarios', name: 'Funcionários' },
 ];
 
 const columns = [
@@ -50,7 +50,7 @@ const columns = [
 
 const fetchUsers = async (page = 1) => {
   try {
-    const result = await api.get(`/patients?page=${page}`, authToken());
+    const result = await api.get(`/employees?page=${page}`, authToken());
     return result.data;
   } catch (err) {
     toast.error(err?.response?.data?.error);
@@ -58,7 +58,7 @@ const fetchUsers = async (page = 1) => {
   return false;
 };
 
-const Patients = () => {
+const Employees = () => {
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -87,7 +87,7 @@ const Patients = () => {
           <Row>
             <Breadcrumb siteMap={siteMap} />
             <Col xs={12}>
-              <PageTitle headerTitle="Pacientes" />
+              <PageTitle headerTitle="Funcionários" />
             </Col>
             <Col xs={12}>
               <UsersTable
@@ -103,4 +103,4 @@ const Patients = () => {
   );
 };
 
-export default Patients;
+export default Employees;

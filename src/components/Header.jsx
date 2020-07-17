@@ -8,7 +8,6 @@ import {
   FiSettings,
   FiUsers,
 } from 'react-icons/fi';
-import { AiFillMedicineBox } from 'react-icons/ai';
 import { FaStethoscope } from 'react-icons/fa';
 import { BsNewspaper } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
@@ -88,6 +87,7 @@ const StyledAside = styled.aside`
     transition: all ease 0.5s;
     top: 80px;
     position: relative;
+    width: 100%;
     @media screen and (min-width: 1024px) {
       padding: 32px 24px;
       transform: translateX(240px);
@@ -175,15 +175,30 @@ function Header() {
           <AvatarPicture
             path={currentlyUser?.user?.avatar?.url}
             size="small"
-            description="teste"
+            description={currentlyUser?.user?.name}
           />
           <Dropdown>
             <Dropdown.Toggle>{currentlyUser?.user?.name}</Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item href="/" onClick={() => currentlyUser.logout()}>
+              <NavLink
+                to="/meu-perfil"
+                className="dropdown-item"
+                activeClassName="active"
+              >
+                Meu perfil
+              </NavLink>
+
+              <Dropdown.Divider />
+
+              <NavLink
+                to="/login"
+                className="dropdown-item"
+                activeClassName="active"
+                onClick={() => currentlyUser.logout()}
+              >
                 Sair
-              </Dropdown.Item>
+              </NavLink>
             </Dropdown.Menu>
           </Dropdown>
         </div>
@@ -244,16 +259,6 @@ function Header() {
               <NavLink to="/funcionarios" activeClassName="active">
                 <FiUsers size={24} />
                 <span className="aside-page-name">Funcionários</span>
-              </NavLink>
-            </li>
-          </ul>
-
-          <span className="aside-link-separator">Meu perfil</span>
-          <ul>
-            <li>
-              <NavLink to="/meu-perfil" activeClassName="active">
-                <FiSettings size={24} />
-                <span className="aside-page-name">Meu perfil</span>
               </NavLink>
             </li>
           </ul>
