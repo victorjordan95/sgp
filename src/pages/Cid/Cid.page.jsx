@@ -111,7 +111,7 @@ const Doctors = () => {
                     search={search}
                     setSearch={setSearch}
                     selectOptions={selectOptions}
-                    search={searchCid}
+                    searchFunc={searchCid}
                   />
                 }
                 highlightOnHover

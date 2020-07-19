@@ -20,7 +20,7 @@ const SearchHeader = styled.div`
   }
 `;
 
-export default ({ search, setSearch, selectOptions, search }) => {
+export default ({ search, setSearch, selectOptions, searchFunc }) => {
   return (
     <SearchHeader>
       <select
@@ -28,14 +28,16 @@ export default ({ search, setSearch, selectOptions, search }) => {
         value={search?.option}
         onChange={e => setSearch({ ...search, option: e.target.value })}
       >
-        {selectOptions.map(option => (
-          <option value={option.value}>{option.label}</option>
+        {selectOptions.map((option, key) => (
+          <option key={key} value={option.value}>
+            {option.label}
+          </option>
         ))}
       </select>
       <input
         placeholder="Selecione por qual coluna deseja filtrar"
         className="form-control"
-        value={search?.value}
+        value={search?.searchValue}
         onChange={e =>
           setSearch({
             ...search,
@@ -43,7 +45,7 @@ export default ({ search, setSearch, selectOptions, search }) => {
           })
         }
       />
-      <button type="button" className="btn btn-primary" onClick={search}>
+      <button type="button" className="btn btn-primary" onClick={searchFunc}>
         <FiSearch size={24} />
       </button>
     </SearchHeader>

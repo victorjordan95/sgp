@@ -41,7 +41,6 @@ function UsersTable({
       subHeader={subHeader}
       subHeaderComponent={subHeaderComponent}
       subHeaderAlign="left"
-      expandableRowsComponent
       expandableRowsComponent={expandableRowsComponent}
     />
   );

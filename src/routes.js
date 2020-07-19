@@ -11,6 +11,7 @@ import Login from './pages/Login/Login.page';
 import Profile from './pages/Profile/Profile.page';
 import Patients from './pages/Patients/Patients.page';
 import Register from './pages/Register/Register.page';
+import RequestSchedule from './pages/RequestSchedule/RequestSchedule.page';
 
 export default function Routes() {
   return (
@@ -27,6 +28,7 @@ export default function Routes() {
         <Route path="/meu-perfil" component={Profile} />
         <Route path="/minhas-consultas" component={Appointment} />
         <Route path="/pacientes" component={Patients} />
+        <Route path="/requisicoes-consultas" component={RequestSchedule} />
       </Switch>
     </BrowserRouter>
   );
