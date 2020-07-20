@@ -7,6 +7,7 @@ import Cid from './pages/Cid/Cid.page';
 import Dashboard from './pages/Dashboard/Dashboard.page';
 import Doctors from './pages/Doctors/Doctors.page';
 import Employees from './pages/Employees/Employees.page';
+import EmployeeProfile from './pages/EmployeeProfile/EmployeeProfile.page';
 import Login from './pages/Login/Login.page';
 import Profile from './pages/Profile/Profile.page';
 import Patients from './pages/Patients/Patients.page';
@@ -23,6 +24,7 @@ export default function Routes() {
         <Route path="/cid" component={Cid} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/funcionarios" component={Employees} />
+        <Route path="/funcionario/:id" component={EmployeeProfile} />
         <Route path="/login" exact component={Login} />
         <Route path="/medicos" component={Doctors} />
         <Route path="/meu-perfil" component={Profile} />

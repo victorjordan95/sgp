@@ -2,13 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Badge from 'react-bootstrap/Badge';
 import { MdMenu, MdNotificationsNone } from 'react-icons/md';
-import {
-  FiPieChart,
-  FiUser,
-  FiCalendar,
-  FiSettings,
-  FiUsers,
-} from 'react-icons/fi';
+import { FiPieChart, FiUser, FiCalendar, FiUsers } from 'react-icons/fi';
 import { FaStethoscope, FaBookMedical } from 'react-icons/fa';
 import { BsNewspaper } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
@@ -161,6 +155,10 @@ const StyledAside = styled.aside`
 `;
 
 const NotificationDropdown = styled(NavLink)`
+  &:hover {
+    background-color: #fff;
+  }
+
   &:active {
     background-color: #fff;
     color: #000;
@@ -185,16 +183,20 @@ function Header() {
   const [notifications, setNotifications] = useState(0);
 
   useEffect(() => {
-    fetchNotifications().then(res => {
-      setNotifications(res.data);
-    });
-  }, []);
+    if (userRole !== Roles.PACIENT) {
+      fetchNotifications().then(res => {
+        setNotifications(res.data);
+      });
+    }
+  }, [userRole]);
 
-  setTimeout(() => {
-    fetchNotifications().then(res => {
-      setNotifications(res.data);
-    });
-  }, 10000);
+  if (userRole !== Roles.PACIENT) {
+    setTimeout(() => {
+      fetchNotifications().then(res => {
+        setNotifications(res.data);
+      });
+    }, 10000);
+  }
 
   return (
     <>
@@ -206,18 +208,22 @@ function Header() {
           <h3>Saluti</h3>
         </div>
         <div className="nav-actions">
-          <NotificationDropdown
-            to="/requisicoes-consultas"
-            className="dropdown-item"
-            activeClassName="bg-white"
-          >
-            <MdNotificationsNone size={32} />
-            {notifications > 0 && (
-              <Badge pill variant="danger">
-                {notifications}
-              </Badge>
-            )}
-          </NotificationDropdown>
+          {(userRole === Roles.EMPLOYEE || userRole === Roles.ADMIN) && (
+            <NotificationDropdown
+              to="/requisicoes-consultas"
+              className="dropdown-item"
+              activeClassName="bg-white"
+            >
+              <div>
+                <MdNotificationsNone size={32} />
+                {notifications > 0 && (
+                  <Badge pill variant="danger">
+                    {notifications}
+                  </Badge>
+                )}
+              </div>
+            </NotificationDropdown>
+          )}
 
           <AvatarPicture
             path={currentlyUser?.user?.avatar?.url}
@@ -265,14 +271,6 @@ function Header() {
                 <NavLink to="/agenda" activeClassName="active">
                   <FiCalendar size={24} />
                   <span className="aside-page-name">Agenda médica</span>
-                </NavLink>
-              </li>
-            )}
-            {(userRole === Roles.DOCTOR || userRole === Roles.EMPLOYEE) && (
-              <li>
-                <NavLink to="/requisicoes-consultas" activeClassName="active">
-                  <FiCalendar size={24} />
-                  <span className="aside-page-name">Requisições</span>
                 </NavLink>
               </li>
             )}
