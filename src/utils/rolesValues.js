@@ -1,6 +1,6 @@
 export default [
   { label: 'Administrador', value: 'ADMIN' },
-  { label: 'Funcionário', value: 'EMPLOYEE' },
-  { label: 'Médico', value: 'DOCTOR' },
-  { label: 'Paciente', value: 'PACIENT' },
+  { label: 'Médico', value: 'MEDICO' },
+  { label: 'Funcionário', value: 'FUNCIONARIO' },
+  { label: 'Paciente', value: 'PACIENTE' },
 ];

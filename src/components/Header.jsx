@@ -190,13 +190,13 @@ function Header() {
     }
   }, [userRole]);
 
-  if (userRole !== Roles.PACIENT) {
-    setTimeout(() => {
-      fetchNotifications().then(res => {
-        setNotifications(res.data);
-      });
-    }, 10000);
-  }
+  // if (userRole !== Roles.PACIENT) {
+  //   setTimeout(() => {
+  //     fetchNotifications().then(res => {
+  //       setNotifications(res.data);
+  //     });
+  //   }, 10000);
+  // }
 
   return (
     <>

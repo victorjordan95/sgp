@@ -1,5 +1,9 @@
 export const removeSpecial = obj => {
   const removed = {};
+  debugger;
+  if (typeof obj === 'string') {
+    return obj.replace(/[^\w\s]/gi, '');
+  }
   for (const property in obj) {
     if (
       !obj[property] ||

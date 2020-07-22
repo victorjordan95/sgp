@@ -23,7 +23,7 @@ import LabelStyled from '../../styles/LabelForm';
 
 const siteMap = [
   { path: 'dashboard', name: 'Início' },
-  { path: 'funcionarios', name: 'Funcionários' },
+  { path: '/funcionarios', name: 'Funcionários' },
   { path: '', name: 'Editar funcionário' },
 ];
 
@@ -46,11 +46,26 @@ function EmployeeProfile(props) {
   const handleSubmit = async e => {
     setLoading(true);
     e.preventDefault();
+    const user = {
+      name: formValues.name,
+      email: formValues.email,
+      phone: removeSpecial(formValues.phone || formValues.Contact?.phone),
+      cellphone: removeSpecial(
+        formValues.cellphone || formValues.Contact?.cellphone
+      ),
+      cpf: removeSpecial(formValues.cpf),
+      rg: removeSpecial(formValues.rg),
+      street: formValues.street,
+      number: formValues.number,
+      complement: formValues.complement,
+      city: formValues.city,
+      state: formValues?.state?.value
+        ? formValues.state.value
+        : formValues?.address_pk?.state,
+      country: 'BR',
+    };
     try {
-      const newValues = formValues.state.value
-        ? { ...formValues, state: formValues.state.value }
-        : formValues;
-      await api.put('/users', removeSpecial(newValues), authToken());
+      await api.put(`/users/${formValues.id}`, user, authToken());
       toast.success('Perfil salvo com sucesso!');
       setLoading(false);
     } catch (err) {
@@ -95,7 +110,9 @@ function EmployeeProfile(props) {
                         type="text"
                         placeholder="Digite seu nome"
                         name="name"
-                        value={formValues?.name || currentlyUser?.user?.name}
+                        value={
+                          formValues?.name || currentlyUser?.user?.name || ''
+                        }
                         onChange={e =>
                           setFormValues({ ...formValues, name: e.target.value })
                         }
@@ -108,7 +125,7 @@ function EmployeeProfile(props) {
                         type="email"
                         placeholder="Digite seu e-mail"
                         name="email"
-                        value={formValues?.email}
+                        value={formValues?.email || ''}
                         onChange={e =>
                           setFormValues({
                             ...formValues,
@@ -128,7 +145,9 @@ function EmployeeProfile(props) {
                         type="text"
                         placeholder="Digite seu telefone"
                         name="phone"
-                        value={formValues?.phone || formValues?.Contact?.phone}
+                        value={
+                          formValues?.phone || formValues?.Contact?.phone || ''
+                        }
                         onChange={e =>
                           setFormValues({
                             ...formValues,
@@ -148,7 +167,8 @@ function EmployeeProfile(props) {
                         name="cellphone"
                         value={
                           formValues?.cellphone ||
-                          formValues?.Contact?.cellphone
+                          formValues?.Contact?.cellphone ||
+                          ''
                         }
                         onChange={e =>
                           setFormValues({
@@ -199,7 +219,9 @@ function EmployeeProfile(props) {
                         placeholder="Digite sua rua"
                         name="street"
                         value={
-                          formValues?.street || formValues?.address_pk?.street
+                          formValues?.street ||
+                          formValues?.address_pk?.street ||
+                          ''
                         }
                         onChange={e =>
                           setFormValues({
@@ -217,7 +239,9 @@ function EmployeeProfile(props) {
                         placeholder="Digite o número"
                         name="number"
                         value={
-                          formValues?.number || formValues?.address_pk?.number
+                          formValues?.number ||
+                          formValues?.address_pk?.number ||
+                          ''
                         }
                         onChange={e =>
                           setFormValues({
@@ -236,7 +260,8 @@ function EmployeeProfile(props) {
                         name="complement"
                         value={
                           formValues?.complement ||
-                          formValues?.address_pk?.complement
+                          formValues?.address_pk?.complement ||
+                          ''
                         }
                         onChange={e =>
                           setFormValues({
@@ -255,7 +280,9 @@ function EmployeeProfile(props) {
                         type="text"
                         placeholder="Digite sua cidade"
                         name="city"
-                        value={formValues?.city || formValues?.address_pk?.city}
+                        value={
+                          formValues?.city || formValues?.address_pk?.city || ''
+                        }
                         onChange={e =>
                           setFormValues({ ...formValues, city: e.target.value })
                         }
@@ -287,10 +314,11 @@ function EmployeeProfile(props) {
                       <Select
                         options={rolesValues}
                         value={
-                          formValues?.role ||
-                          stateValues.filter(
-                            role => role.value === formValues?.Role?.role
-                          )
+                          formValues?.role?.value
+                            ? formValues.role
+                            : rolesValues.filter(
+                                role => role.value === formValues?.Role?.role
+                              )
                         }
                         onChange={e =>
                           setFormValues({ ...formValues, role: e })

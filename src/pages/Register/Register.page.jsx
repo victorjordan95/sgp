@@ -54,21 +54,22 @@ function Register(props) {
     const user = {
       name: formValues.name,
       email: formValues.email,
-      password: formValues.password_hash,
-      phone: formValues.phone,
-      cellphone: formValues.cellphone,
-      cpf: formValues.cpf,
-      rg: formValues.rg,
+      password: formValues.password,
+      phone: removeSpecial(formValues.phone),
+      cellphone: removeSpecial(formValues.cellphone),
+      cpf: removeSpecial(formValues.cpf),
+      rg: removeSpecial(formValues.rg),
       street: formValues.street,
       number: formValues.number,
       complement: formValues.complement,
       city: formValues.city,
       state: formValues.state.value,
       country: 'BR',
+      role: 4,
     };
 
     try {
-      await api.post('/users', removeSpecial(user));
+      await api.post('/users', user);
       toast.success('Usuário criado com sucesso!');
       props.history.push('/');
     } catch (err) {
