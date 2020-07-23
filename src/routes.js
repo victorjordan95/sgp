@@ -12,6 +12,7 @@ import Login from './pages/Login/Login.page';
 import Profile from './pages/Profile/Profile.page';
 import Patients from './pages/Patients/Patients.page';
 import Register from './pages/Register/Register.page';
+import RegisterEmployee from './pages/Register/RegisterEmployee.page';
 import RequestSchedule from './pages/RequestSchedule/RequestSchedule.page';
 
 export default function Routes() {
@@ -21,6 +22,7 @@ export default function Routes() {
         <Route path="/" exact component={Login} />
         <Route path="/agenda" component={Agenda} />
         <Route path="/cadastro" component={Register} />
+        <Route path="/cadastro-funcionario" component={RegisterEmployee} />
         <Route path="/cid" component={Cid} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/funcionarios" component={Employees} />
