@@ -119,9 +119,7 @@ function Appointment() {
           <Row>
             <Breadcrumb siteMap={siteMap} />
             <Col xs={12}>
-              <PageTitle
-                headerTitle={`Bem-vindo ${currentlyUser?.user?.name}`}
-              />
+              <PageTitle headerTitle="Minhas consultas" />
             </Col>
             <Col xs={12}>
               {schedules && (

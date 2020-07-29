@@ -19,6 +19,7 @@ export default createGlobalStyle`
     color: #fff;
     background-color: #009688;
     border-color: #009688;
+    height: 40px;
     &:hover {
       background-color: #00897b;
       border-color: #00897b;

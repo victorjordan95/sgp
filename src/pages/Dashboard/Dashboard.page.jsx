@@ -7,6 +7,7 @@ import Header from '../../components/Header';
 
 function Dashboard() {
   const currentlyUser = useContext(userContext);
+  debugger;
   return (
     <div>
       <Header />

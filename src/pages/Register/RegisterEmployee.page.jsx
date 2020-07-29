@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import InputMask from 'react-input-mask';
 import Select from 'react-select';
@@ -8,6 +8,7 @@ import { FiSave } from 'react-icons/fi';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 import { removeSpecial } from '../../utils/removeSpecialCharacters';
+import userContext from '../../store/UserContext';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
@@ -24,9 +25,20 @@ const siteMap = [
   { path: '', name: 'Cadastrar funcionário' },
 ];
 
+const fillEstablishments = list => {
+  const establishmentsList = [];
+  list.forEach(estab => {
+    establishmentsList.push({ label: estab.name, value: estab.id });
+  });
+  return establishmentsList;
+};
+
 function RegisterEmployee() {
+  const currentlyUser = useContext(userContext);
+
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
+  const [establishments, setEstablishments] = useState([]);
 
   const DEFAULT_PASSWORD = 'newuser123';
 
@@ -47,20 +59,28 @@ function RegisterEmployee() {
       complement: formValues.complement,
       city: formValues.city,
       state: formValues?.state?.value,
-      role: formValues?.role?.value,
+      role: [formValues?.role?.id],
+      establishments: [formValues?.establishment?.value],
       country: 'BR',
     };
+    console.log(user);
     try {
       await api.post(`/users`, user, authToken());
       toast.success('Perfil salvo com sucesso!');
       setLoading(false);
+      setFormValues({});
     } catch (err) {
       toast.error(err?.response?.data?.error);
       setLoading(false);
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const estabs =
+      currentlyUser?.user?.establishments &&
+      fillEstablishments(currentlyUser?.user?.establishments);
+    setEstablishments(estabs);
+  }, [currentlyUser]);
 
   return loading ? (
     <Loader />
@@ -265,6 +285,17 @@ function RegisterEmployee() {
                           setFormValues({ ...formValues, role: e })
                         }
                         placeholder="Selecione o tipo de usuário"
+                      />
+                    </Form.Group>
+                    <Form.Group as={Col}>
+                      <LabelStyled>Estabelecimento</LabelStyled>
+                      <Select
+                        options={establishments}
+                        value={formValues?.establishment}
+                        onChange={e =>
+                          setFormValues({ ...formValues, establishment: e })
+                        }
+                        placeholder="Selecione o estabelecimento"
                       />
                     </Form.Group>
                   </Form.Row>
