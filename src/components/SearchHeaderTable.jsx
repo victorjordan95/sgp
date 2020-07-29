@@ -5,6 +5,8 @@ import { FiSearch } from 'react-icons/fi';
 const SearchHeader = styled.div`
   align-items: center;
   display: flex;
+  height: 50px;
+  max-width: 650px;
   left: -16px;
   position: relative;
   select {
@@ -20,9 +22,17 @@ const SearchHeader = styled.div`
   }
 `;
 
-export default ({ search, setSearch, selectOptions, searchFunc }) => {
+export default ({
+  search,
+  setSearch,
+  selectOptions,
+  searchFunc,
+  style,
+  placeholder,
+  hideInput,
+}) => {
   return (
-    <SearchHeader>
+    <SearchHeader style={style}>
       <select
         className="form-control"
         value={search?.option}
@@ -34,17 +44,21 @@ export default ({ search, setSearch, selectOptions, searchFunc }) => {
           </option>
         ))}
       </select>
-      <input
-        placeholder="Selecione por qual coluna deseja filtrar"
-        className="form-control"
-        value={search?.searchValue}
-        onChange={e =>
-          setSearch({
-            ...search,
-            searchValue: e.target.value,
-          })
-        }
-      />
+      {!hideInput && (
+        <input
+          placeholder={
+            placeholder || 'Selecione por qual coluna deseja filtrar'
+          }
+          className="form-control"
+          value={search?.searchValue}
+          onChange={e =>
+            setSearch({
+              ...search,
+              searchValue: e.target.value,
+            })
+          }
+        />
+      )}
       <button type="button" className="btn btn-primary" onClick={searchFunc}>
         <FiSearch size={24} />
       </button>

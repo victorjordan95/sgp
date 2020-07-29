@@ -41,7 +41,7 @@ function App() {
             session_token: token,
           });
           const userData = await api.get(
-            `/users/${user.data.user.user_id}`,
+            `/users/${user?.data?.user?.user_id}`,
             authToken()
           );
           handleUserContext(userData.data);

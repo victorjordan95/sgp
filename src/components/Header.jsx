@@ -2,8 +2,14 @@ import React, { useState, useContext, useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Badge from 'react-bootstrap/Badge';
 import { MdMenu, MdNotificationsNone } from 'react-icons/md';
-import { FiPieChart, FiUser, FiCalendar, FiUsers } from 'react-icons/fi';
-import { FaStethoscope, FaBookMedical } from 'react-icons/fa';
+import {
+  FiPieChart,
+  FiUser,
+  FiCalendar,
+  FiUsers,
+  FiMapPin,
+} from 'react-icons/fi';
+import { FaStethoscope, FaBookMedical, FaRegBuilding } from 'react-icons/fa';
 import { BsNewspaper } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
 
@@ -87,7 +93,7 @@ const StyledAside = styled.aside`
     position: relative;
     width: 100%;
     @media screen and (min-width: 1024px) {
-      padding: 32px 24px;
+      padding: 32px 24px 32px 0;
       transform: translateX(240px);
       width: calc(100vw - 250px);
     }
@@ -99,7 +105,7 @@ const StyledAside = styled.aside`
       padding: 32px 8px;
       width: calc(100vw);
       @media screen and (min-width: 1024px) {
-        padding: 32px 24px;
+        padding: 32px 24px 32px 0;
         transform: translateX(0);
       }
     }
@@ -298,7 +304,7 @@ function Header() {
             </li>
           </ul>
 
-          <span className="aside-link-separator">Usuários</span>
+          <span className="aside-link-separator">Consultar</span>
           <ul>
             {!(userRole === Roles.PACIENT) && (
               <li>
@@ -314,10 +320,26 @@ function Header() {
                 <span className="aside-page-name">Médicos</span>
               </NavLink>
             </li>
+            {userRole === Roles.ADMIN && (
+              <li>
+                <NavLink to="/funcionarios" activeClassName="active">
+                  <FiUsers size={24} />
+                  <span className="aside-page-name">Funcionários</span>
+                </NavLink>
+              </li>
+            )}
+            {userRole === Roles.ADMIN && (
+              <li>
+                <NavLink to="/estabelecimentos" activeClassName="active">
+                  <FaRegBuilding size={24} />
+                  <span className="aside-page-name">Estabelecimentos</span>
+                </NavLink>
+              </li>
+            )}
             <li>
-              <NavLink to="/funcionarios" activeClassName="active">
-                <FiUsers size={24} />
-                <span className="aside-page-name">Funcionários</span>
+              <NavLink to="/mapa" activeClassName="active">
+                <FiMapPin size={24} />
+                <span className="aside-page-name">Mapa clínicas</span>
               </NavLink>
             </li>
           </ul>

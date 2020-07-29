@@ -24,7 +24,7 @@ const siteMap = [
   { path: '', name: 'Cadastrar funcionário' },
 ];
 
-function RegisterEmployee(props) {
+function RegisterEmployee() {
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
 
