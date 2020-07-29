@@ -39,7 +39,7 @@ const fetchSchedules = async (page = 1, name = '') => {
 };
 
 const RequestSchedule = () => {
-  const [cid, setCids] = useState();
+  const [requests, setRequests] = useState();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState({ option: 'name' });
 
@@ -120,7 +120,7 @@ const RequestSchedule = () => {
   useEffect(() => {
     setLoading(true);
     fetchSchedules().then(res => {
-      setCids(res);
+      setRequests(res);
       setLoading(false);
     });
   }, []);
@@ -128,7 +128,7 @@ const RequestSchedule = () => {
   const handlePageChange = e => {
     setLoading(true);
     fetchSchedules(e).then(res => {
-      setCids(res, search?.searchValue);
+      setRequests(res, search?.searchValue);
       setLoading(false);
     });
   };
@@ -136,7 +136,7 @@ const RequestSchedule = () => {
   const searchRequests = () => {
     setLoading(true);
     fetchSchedules(1, search?.searchValue).then(res => {
-      setCids(res);
+      setRequests(res);
       setLoading(false);
     });
   };
@@ -155,7 +155,7 @@ const RequestSchedule = () => {
             </Col>
             <Col xs={12}>
               <UsersTable
-                data={cid}
+                data={requests}
                 columns={columns}
                 handlePageChange={handlePageChange}
                 amountPerPage={50}

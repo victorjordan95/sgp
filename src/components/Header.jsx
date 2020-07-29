@@ -222,9 +222,9 @@ function Header() {
             >
               <div>
                 <MdNotificationsNone size={32} />
-                {notifications > 0 && (
+                {notifications.count > 0 && (
                   <Badge pill variant="danger">
-                    {notifications}
+                    {notifications.count}
                   </Badge>
                 )}
               </div>
