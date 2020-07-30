@@ -63,7 +63,6 @@ function RegisterEmployee() {
       establishments: [formValues?.establishment?.value],
       country: 'BR',
     };
-    console.log(user);
     try {
       await api.post(`/users`, user, authToken());
       toast.success('Perfil salvo com sucesso!');
