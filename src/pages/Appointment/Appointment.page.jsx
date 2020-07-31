@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
@@ -12,7 +6,6 @@ import moment from 'moment';
 import 'moment/locale/pt-br';
 import { toast } from 'react-toastify';
 
-import userContext from '../../store/UserContext';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 
