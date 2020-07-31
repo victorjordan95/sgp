@@ -114,10 +114,9 @@ function Agenda() {
     if (view === 'month') fetchMonthSchedules(date);
   };
 
-  return loading ? (
-    <Loader />
-  ) : (
+  return (
     <div>
+      {loading && <Loader />}
       <Header />
       <StyledMain>
         <Container fluid>

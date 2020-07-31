@@ -66,6 +66,10 @@ function Establishment() {
         });
       });
     } else {
+      setUserLocale({
+        lat: -23.547697,
+        lng: -46.634674,
+      });
       toast.error('Geolocalização não suportada em seu navegador!');
       console.log('Geolocation not supported');
       setLoading(false);

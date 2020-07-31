@@ -100,11 +100,10 @@ function Appointment() {
     if (view === 'month') fetchMonthSchedules(date);
   };
 
-  return loading ? (
-    <Loader />
-  ) : (
+  return (
     <div>
       <Header />
+      {loading && <Loader />}
       <StyledMain>
         <Container fluid>
           <Row>

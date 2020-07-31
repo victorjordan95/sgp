@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import InputMask from 'react-input-mask';
@@ -48,6 +49,37 @@ function Register(props) {
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const fetchZipcode = async () => {
+    const config = {
+      headers: {
+        Authorization: `Token token=70885491cf7edfcd6998d756dc8214d1`,
+      },
+    };
+
+    let zip;
+    try {
+      zip = await axios.get(
+        `https://www.cepaberto.com/api/v3/cep?cep=${formValues?.zipcode}`,
+        config
+      );
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (zip) {
+      setFormValues({
+        ...formValues,
+        zip: zip.cep,
+        city: zip.cidade.nome,
+        state: zip.estado.sigla,
+        neighborhood: zip.bairro,
+        street: zip.logradouro,
+        geometry: [zip.latitude, zip.longitude],
+      });
+    }
+    console.log(zip);
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
 
@@ -77,6 +109,7 @@ function Register(props) {
     }
     setLoading(false);
   };
+
   return loading ? (
     <Loader />
   ) : (
@@ -223,6 +256,21 @@ function Register(props) {
 
               <Form.Row>
                 <Form.Group as={Col}>
+                  <LabelStyled>CEP</LabelStyled>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite seu CEP"
+                    name="zipcode"
+                    required
+                    value={formValues?.zipcode || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, zipcode: e.target.value })
+                    }
+                    onBlur={fetchZipcode}
+                  />
+                </Form.Group>
+
+                <Form.Group as={Col}>
                   <LabelStyled>Logradouro</LabelStyled>
                   <Form.Control
                     type="text"
@@ -249,7 +297,8 @@ function Register(props) {
                     }
                   />
                 </Form.Group>
-
+              </Form.Row>
+              <Form.Row>
                 <Form.Group as={Col}>
                   <LabelStyled>Complemento</LabelStyled>
                   <Form.Control
@@ -261,6 +310,22 @@ function Register(props) {
                       setFormValues({
                         ...formValues,
                         complement: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+
+                <Form.Group as={Col}>
+                  <LabelStyled>Bairro</LabelStyled>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite o bairro"
+                    name="neighborhood"
+                    value={formValues?.neighborhood || ''}
+                    onChange={e =>
+                      setFormValues({
+                        ...formValues,
+                        neighborhood: e.target.value,
                       })
                     }
                   />
