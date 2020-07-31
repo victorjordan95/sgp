@@ -56,8 +56,6 @@ const siteMap = [
 ];
 
 function Appointment() {
-  const currentlyUser = useContext(userContext);
-
   const messages = useMemo(
     () => [
       {
