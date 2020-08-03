@@ -40,27 +40,12 @@ function RegisterEmployee() {
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
   const [establishments, setEstablishments] = useState([]);
+  const [fieldDisabled, setDisabled] = useState(true);
 
   const DEFAULT_PASSWORD = 'newuser123';
 
   const fetchZipcode = async () => {
-    // const config = {
-    //   headers: {
-    //     Authorization: `Token token=70885491cf7edfcd6998d756dc8214d1`,
-    //   },
-    // };
-
-    // let zip;
-    // try {
-    //   zip = await axios.get(
-    //     `https://www.cepaberto.com/api/v3/cep?cep=${formValues?.zipcode}`,
-    //     config
-    //   );
-    // } catch (e) {
-    //   console.log(e);
-    // }
-
-    const zip = await cep('05010000');
+    const zip = await cep(formValues.zipcode);
 
     if (zip) {
       setFormValues({
@@ -70,8 +55,9 @@ function RegisterEmployee() {
         state: zip.state,
         neighborhood: zip.neighborhood,
         street: zip.street,
-        // geometry: [zip.latitude, zip.longitude],
       });
+    } else {
+      setDisabled(true);
     }
     console.log(zip);
   };
@@ -234,7 +220,9 @@ function RegisterEmployee() {
                   <Form.Row>
                     <Form.Group as={Col}>
                       <LabelStyled>CEP</LabelStyled>
-                      <Form.Control
+                      <InputMask
+                        mask="99999-999"
+                        className="form-control"
                         type="text"
                         placeholder="Digite seu CEP"
                         name="zipcode"
@@ -256,6 +244,7 @@ function RegisterEmployee() {
                         type="text"
                         placeholder="Digite seu logradouro"
                         name="street"
+                        disabled={fieldDisabled}
                         required
                         value={formValues?.street || ''}
                         onChange={e =>
@@ -307,6 +296,7 @@ function RegisterEmployee() {
                         type="text"
                         placeholder="Digite o bairro"
                         name="neighborhood"
+                        disabled={fieldDisabled}
                         value={formValues?.neighborhood || ''}
                         onChange={e =>
                           setFormValues({
@@ -324,6 +314,7 @@ function RegisterEmployee() {
                       <Form.Control
                         type="text"
                         placeholder="Digite sua cidade"
+                        disabled={fieldDisabled}
                         name="city"
                         value={formValues?.city || ''}
                         onChange={e =>
@@ -337,6 +328,7 @@ function RegisterEmployee() {
                       <Select
                         options={stateValues}
                         value={formValues?.state}
+                        disabled={fieldDisabled}
                         onChange={e =>
                           setFormValues({ ...formValues, state: e })
                         }

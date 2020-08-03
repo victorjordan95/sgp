@@ -48,38 +48,24 @@ const RegisterFooter = styled(Form.Row)`
 function Register(props) {
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
+  const [fieldDisabled, setDisabled] = useState(true);
 
   const fetchZipcode = async () => {
-    // const config = {
-    //   headers: {
-    //     Authorization: `Token token=70885491cf7edfcd6998d756dc8214d1`,
-    //   },
-    // };
-
-    // let zip;
-    // try {
-    //   zip = await axios.get(
-    //     `https://www.cepaberto.com/api/v3/cep?cep=${formValues?.zipcode}`,
-    //     config
-    //   );
-    // } catch (e) {
-    //   console.log(e);
-    // }
-
-    const zip = await cep('05010000');
+    const zip = await cep(formValues.zipcode);
 
     if (zip) {
       setFormValues({
         ...formValues,
         zip: zip.cep,
         city: zip.city,
-        state: zip.state,
+        state: stateValues.filter(state => state.value === zip?.state),
         neighborhood: zip.neighborhood,
         street: zip.street,
-        // geometry: [zip.latitude, zip.longitude],
       });
+      await api.get(`/city?cityName=${zip.city}&stateName=${zip.state}`);
+    } else {
+      setDisabled(true);
     }
-    console.log(zip);
   };
 
   const handleSubmit = async e => {
@@ -259,7 +245,9 @@ function Register(props) {
               <Form.Row>
                 <Form.Group as={Col}>
                   <LabelStyled>CEP</LabelStyled>
-                  <Form.Control
+                  <InputMask
+                    mask="99999-999"
+                    className="form-control"
                     type="text"
                     placeholder="Digite seu CEP"
                     name="zipcode"
@@ -279,6 +267,7 @@ function Register(props) {
                     placeholder="Digite seu logradouro"
                     name="street"
                     required
+                    disabled={fieldDisabled}
                     value={formValues?.street || ''}
                     onChange={e =>
                       setFormValues({ ...formValues, street: e.target.value })
@@ -323,6 +312,7 @@ function Register(props) {
                     type="text"
                     placeholder="Digite o bairro"
                     name="neighborhood"
+                    disabled={fieldDisabled}
                     value={formValues?.neighborhood || ''}
                     onChange={e =>
                       setFormValues({
@@ -341,6 +331,7 @@ function Register(props) {
                     type="text"
                     placeholder="Digite sua cidade"
                     name="city"
+                    disabled={fieldDisabled}
                     value={formValues?.city || ''}
                     onChange={e =>
                       setFormValues({ ...formValues, city: e.target.value })
@@ -351,6 +342,7 @@ function Register(props) {
                 <Form.Group as={Col}>
                   <LabelStyled>Estado</LabelStyled>
                   <Select
+                    disabled={fieldDisabled}
                     options={stateValues}
                     value={formValues?.state}
                     onChange={e => setFormValues({ ...formValues, state: e })}

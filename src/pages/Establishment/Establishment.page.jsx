@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
@@ -8,6 +8,7 @@ import L from 'leaflet';
 
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
+import userContext from '../../store/UserContext';
 import { formatPhone, formatCellphone } from '../../utils/phoneFormater';
 import medicineCategoriesValues from '../../utils/medicineCategoriesValues';
 
@@ -43,7 +44,22 @@ const fetchEstablishments = async (lat, lng, name = '') => {
   return false;
 };
 
+const fetchLatLng = async (cityName, stateName) => {
+  try {
+    const result = await api.get(
+      `/city?cityName=${cityName}&stateName=${stateName}`,
+      authToken()
+    );
+    return result.data;
+  } catch (err) {
+    toast.error(err?.response?.data?.error);
+  }
+  return false;
+};
+
 function Establishment() {
+  const currentlyUser = useContext(userContext);
+
   const [userLocale, setUserLocale] = useState();
   const [establishments, setEstablishments] = useState();
   const [loading, setLoading] = useState(false);
@@ -51,32 +67,25 @@ function Establishment() {
 
   useEffect(() => {
     setLoading(true);
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(position => {
-        setUserLocale({
-          lat: position?.coords?.latitude,
-          lng: position?.coords?.longitude,
-        });
-        fetchEstablishments(
-          position?.coords?.latitude,
-          position?.coords?.longitude
-        ).then(res => {
-          setEstablishments(res);
-          setLoading(false);
-        });
-      });
-    } else {
+    fetchLatLng(
+      currentlyUser?.user?.address_pk?.city,
+      currentlyUser?.user?.address_pk?.state
+    ).then(res => {
       setUserLocale({
-        lat: -23.547697,
-        lng: -46.634674,
+        lat: res[0]?.location?.coordinates[0],
+        lng: res[0]?.location?.coordinates[1],
       });
-      toast.error('Geolocalização não suportada em seu navegador!');
-      console.log('Geolocation not supported');
-      setLoading(false);
-    }
-  }, []);
+      fetchEstablishments(
+        res[0]?.location?.coordinates[0],
+        res[0]?.location?.coordinates[1]
+      ).then(data => {
+        setEstablishments(data);
+        setLoading(false);
+      });
+    });
+  }, [currentlyUser]);
 
-  const searchEstab = e => {
+  const searchEstab = () => {
     setLoading(true);
     fetchEstablishments(userLocale.lat, userLocale.lng, search.option).then(
       res => {
@@ -109,7 +118,7 @@ function Establishment() {
             <Col xs={12}>
               <Map
                 center={[userLocale?.lat || 45.4, userLocale?.lng || -75.7]}
-                zoom={13}
+                zoom={12}
                 style={{ width: '100%', height: '65vh' }}
               >
                 <TileLayer

@@ -5,6 +5,7 @@ import InputMask from 'react-input-mask';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { FiSave } from 'react-icons/fi';
+import cep from 'cep-promise';
 
 import userContext from '../../store/UserContext';
 import api from '../../services/api';
@@ -39,9 +40,37 @@ function Profile() {
   const currentlyUser = useContext(userContext);
 
   const [formValues, setFormValues] = useState({});
+  const [geometry, setUserGeometry] = useState({});
   const [profilePhoto, setProfilePhoto] = useState('');
   const [newPicture, setNewPicture] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fieldDisabled, setDisabled] = useState(true);
+
+  const fetchZipcode = async () => {
+    const zip = await cep(formValues.zipcode);
+
+    if (zip) {
+      setFormValues({
+        ...formValues,
+        zip: zip.cep,
+        city: zip.city,
+        state: stateValues.filter(state => state.value === zip?.state),
+        neighborhood: zip.neighborhood,
+        street: zip.street,
+      });
+    } else {
+      setDisabled(true);
+    }
+
+    const location = await api.get(
+      `/city?cityName=${zip.city}&stateName=${zip.state}`
+    );
+
+    setUserGeometry([
+      location.data[0]?.location?.coordinates[0],
+      location.data[0]?.location?.coordinates[1],
+    ]);
+  };
 
   const handleProfile = e => {
     setProfilePhoto(e.target.files[0]);
@@ -90,10 +119,10 @@ function Profile() {
     }
 
     try {
-      const newValues = formValues.state.value
-        ? { ...formValues, state: formValues.state.value }
+      const newValues = formValues?.state[0]?.value
+        ? { ...formValues, state: formValues.state[0].value }
         : formValues;
-      await api.put('/users', removeSpecial(newValues), authToken());
+      await api.put('/users', { ...newValues, geometry }, authToken());
       toast.success('Perfil salvo com sucesso!');
       setLoading(false);
     } catch (err) {
@@ -240,7 +269,7 @@ function Profile() {
                         onChange={e =>
                           setFormValues({
                             ...formValues,
-                            cellphone: e.target.value,
+                            cellphone: removeSpecial(e.target.value),
                           })
                         }
                       />
@@ -258,7 +287,10 @@ function Profile() {
                         name="cpf"
                         value={`${formValues?.cpf} || ${currentlyUser?.user?.cpf}  || ''`}
                         onChange={e =>
-                          setFormValues({ ...formValues, cpf: e.target.value })
+                          setFormValues({
+                            ...formValues,
+                            cpf: removeSpecial(e.target.value),
+                          })
                         }
                       />
                     </Form.Group>
@@ -272,7 +304,10 @@ function Profile() {
                         placeholder="Digite seu RG"
                         value={formValues?.rg || currentlyUser?.user?.rg || ''}
                         onChange={e =>
-                          setFormValues({ ...formValues, rg: e.target.value })
+                          setFormValues({
+                            ...formValues,
+                            rg: removeSpecial(e.target.value),
+                          })
                         }
                       />
                     </Form.Group>
@@ -280,11 +315,35 @@ function Profile() {
 
                   <Form.Row>
                     <Form.Group as={Col}>
-                      <LabelStyled>Rua</LabelStyled>
+                      <LabelStyled>CEP</LabelStyled>
+                      <InputMask
+                        mask="99999-999"
+                        className="form-control"
+                        type="text"
+                        placeholder="Digite seu CEP"
+                        name="zipcode"
+                        required
+                        value={
+                          formValues?.zipcode ||
+                          currentlyUser?.user?.address_pk?.zipcode
+                        }
+                        onChange={e =>
+                          setFormValues({
+                            ...formValues,
+                            zipcode: removeSpecial(e.target.value),
+                          })
+                        }
+                        onBlur={fetchZipcode}
+                      />
+                    </Form.Group>
+
+                    <Form.Group as={Col}>
+                      <LabelStyled>Logradouro</LabelStyled>
                       <Form.Control
                         type="text"
-                        placeholder="Digite sua rua"
+                        placeholder="Digite seu logradouro"
                         name="street"
+                        required
                         value={
                           formValues?.street ||
                           currentlyUser?.user?.address_pk?.street
@@ -304,6 +363,7 @@ function Profile() {
                         type="text"
                         placeholder="Digite o número"
                         name="number"
+                        required
                         value={
                           formValues?.number ||
                           currentlyUser?.user?.address_pk?.number
@@ -316,7 +376,9 @@ function Profile() {
                         }
                       />
                     </Form.Group>
+                  </Form.Row>
 
+                  <Form.Row>
                     <Form.Group as={Col}>
                       <LabelStyled>Complemento</LabelStyled>
                       <Form.Control
@@ -331,6 +393,24 @@ function Profile() {
                           setFormValues({
                             ...formValues,
                             complement: e.target.value,
+                          })
+                        }
+                      />
+                    </Form.Group>
+                    <Form.Group as={Col}>
+                      <LabelStyled>Bairro</LabelStyled>
+                      <Form.Control
+                        type="text"
+                        placeholder="Digite o bairro"
+                        name="neighborhood"
+                        value={
+                          formValues?.neighborhood ||
+                          currentlyUser?.user?.address_pk?.neighborhood
+                        }
+                        onChange={e =>
+                          setFormValues({
+                            ...formValues,
+                            neighborhood: e.target.value,
                           })
                         }
                       />

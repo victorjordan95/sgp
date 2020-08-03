@@ -6,6 +6,7 @@ export const removeSpecial = obj => {
   for (const property in obj) {
     if (
       !obj[property] ||
+      obj[property] === 'geometry' ||
       property.includes('passw') ||
       obj[property].includes('@') ||
       obj[property].includes('avatar')
