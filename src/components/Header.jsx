@@ -189,11 +189,11 @@ function Header() {
   const [notifications, setNotifications] = useState(0);
 
   useEffect(() => {
-    if (userRole !== Roles.PACIENT) {
-      fetchNotifications().then(res => {
-        setNotifications(res.data);
-      });
-    }
+    // if (userRole !== Roles.PACIENT) {
+    //   fetchNotifications().then(res => {
+    //     setNotifications(res.data);
+    //   });
+    // }
   }, [userRole]);
 
   // if (userRole !== Roles.PACIENT) {
@@ -222,11 +222,11 @@ function Header() {
             >
               <div>
                 <MdNotificationsNone size={32} />
-                {notifications.count > 0 && (
+                {/* {notifications.count > 0 && (
                   <Badge pill variant="danger">
                     {notifications.count}
                   </Badge>
-                )}
+                )} */}
               </div>
             </NotificationDropdown>
           )}

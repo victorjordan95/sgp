@@ -51,7 +51,12 @@ function Register(props) {
   const [fieldDisabled, setDisabled] = useState(true);
 
   const fetchZipcode = async () => {
-    const zip = await cep(formValues.zipcode);
+    let zip;
+    try {
+      zip = await cep(formValues.zipcode);
+    } catch (error) {
+      toast.error(error);
+    }
 
     if (zip) {
       setFormValues({
@@ -62,7 +67,6 @@ function Register(props) {
         neighborhood: zip.neighborhood,
         street: zip.street,
       });
-      await api.get(`/city?cityName=${zip.city}&stateName=${zip.state}`);
     } else {
       setDisabled(true);
     }

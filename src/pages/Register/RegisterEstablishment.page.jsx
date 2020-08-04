@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import InputMask from 'react-input-mask';
 import Select from 'react-select';
@@ -16,38 +16,31 @@ import Header from '../../components/Header';
 import Loader from '../../components/Loader';
 
 import stateValues from '../../utils/brStatesValues';
-import rolesValues from '../../utils/rolesValues';
+import medicineCategoriesValues from '../../utils/medicineCategoriesValues';
 
 import LabelStyled from '../../styles/LabelForm';
 
 const siteMap = [
   { path: 'dashboard', name: 'Início' },
-  { path: '/funcionarios', name: 'Funcionários' },
-  { path: '', name: 'Cadastrar funcionário' },
+  { path: '/estabelecimentos', name: 'Meus estabelecimentos' },
+  { path: '', name: 'Cadastrar estabelecimento' },
 ];
 
-const fillEstablishments = list => {
-  const establishmentsList = [];
-  list.forEach(estab => {
-    establishmentsList.push({ label: estab.name, value: estab.id });
-  });
-  return establishmentsList;
-};
-
-function RegisterEmployee() {
+function RegisterEstablishment() {
   const currentlyUser = useContext(userContext);
 
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
-  const [establishments, setEstablishments] = useState([]);
   const [fieldDisabled, setDisabled] = useState(true);
-
-  const DEFAULT_PASSWORD = 'newuser123';
 
   const fetchZipcode = async () => {
     let zip;
+    let locale;
     try {
       zip = await cep(formValues.zipcode);
+      locale = await api.get(
+        `/city?cityName=${zip.city}&stateName=${zip.state}`
+      );
     } catch (error) {
       toast.error(error);
     }
@@ -60,35 +53,46 @@ function RegisterEmployee() {
         state: stateValues.filter(state => state.value === zip?.state),
         neighborhood: zip.neighborhood,
         street: zip.street,
+        geometry: locale.data[0].location.coordinates,
       });
     } else {
       setDisabled(true);
     }
   };
-
   const handleSubmit = async e => {
     setLoading(true);
     e.preventDefault();
 
-    const user = {
+    const establishment = {
       name: formValues.name,
-      email: formValues.email,
       phone: removeSpecial(formValues.phone),
       cellphone: removeSpecial(formValues.cellphone),
-      password: DEFAULT_PASSWORD,
-      cpf: removeSpecial(formValues.cpf),
-      rg: removeSpecial(formValues.rg),
+      cnpj: removeSpecial(formValues.cnpj),
       street: formValues.street,
       number: formValues.number,
       complement: formValues.complement,
       city: formValues.city,
-      state: formValues?.state?.value,
-      role: [formValues?.role?.id],
-      establishments: [formValues?.establishment?.value],
+      state: formValues?.state[0]?.value,
+      categories: formValues.categories.map(el => el.value),
+      geometry: formValues.geometry,
       country: 'BR',
     };
     try {
-      await api.post(`/users`, user, authToken());
+      const newEstab = await api.post(
+        `/establishment`,
+        establishment,
+        authToken()
+      );
+      await api.put(
+        `/users/${currentlyUser?.user?.id}`,
+        {
+          establishments: [
+            ...currentlyUser?.user?.establishments.map(estab => estab.id),
+            newEstab.data.id,
+          ],
+        },
+        authToken()
+      );
       toast.success('Perfil salvo com sucesso!');
       setLoading(false);
       setFormValues({});
@@ -97,13 +101,6 @@ function RegisterEmployee() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const estabs =
-      currentlyUser?.user?.establishments &&
-      fillEstablishments(currentlyUser?.user?.establishments);
-    setEstablishments(estabs);
-  }, [currentlyUser]);
 
   return loading ? (
     <Loader />
@@ -123,30 +120,14 @@ function RegisterEmployee() {
                 <Form onSubmit={handleSubmit}>
                   <Form.Row>
                     <Form.Group as={Col}>
-                      <LabelStyled>Nome completo</LabelStyled>
+                      <LabelStyled>Nome</LabelStyled>
                       <Form.Control
                         type="text"
-                        placeholder="Digite seu nome"
+                        placeholder="Digite o nome"
                         name="name"
                         value={formValues?.name || ''}
                         onChange={e =>
                           setFormValues({ ...formValues, name: e.target.value })
-                        }
-                      />
-                    </Form.Group>
-
-                    <Form.Group as={Col}>
-                      <LabelStyled>Endereço de e-mail</LabelStyled>
-                      <Form.Control
-                        type="email"
-                        placeholder="Digite seu e-mail"
-                        name="email"
-                        value={formValues?.email || ''}
-                        onChange={e =>
-                          setFormValues({
-                            ...formValues,
-                            email: e.target.value,
-                          })
                         }
                       />
                     </Form.Group>
@@ -159,7 +140,7 @@ function RegisterEmployee() {
                         mask="(99) 9999-9999"
                         className="form-control"
                         type="text"
-                        placeholder="Digite seu telefone"
+                        placeholder="Digite o telefone"
                         name="phone"
                         value={formValues?.phone || ''}
                         onChange={e =>
@@ -177,7 +158,7 @@ function RegisterEmployee() {
                         mask="(99) 99999-9999"
                         className="form-control"
                         type="text"
-                        placeholder="Digite seu celular"
+                        placeholder="Digite o celular"
                         name="cellphone"
                         value={formValues?.cellphone || ''}
                         onChange={e =>
@@ -192,30 +173,16 @@ function RegisterEmployee() {
 
                   <Form.Row>
                     <Form.Group as={Col}>
-                      <LabelStyled>CPF</LabelStyled>
+                      <LabelStyled>CNPJ</LabelStyled>
                       <InputMask
-                        mask="999.999.999-99"
+                        mask="99.999.999/9999-99"
                         className="form-control"
                         type="text"
-                        placeholder="Digite seu CPF"
-                        name="cpf"
-                        value={formValues?.cpf || ''}
+                        placeholder="Digite o CNPJ"
+                        name="cnpj"
+                        value={formValues?.cnpj || ''}
                         onChange={e =>
-                          setFormValues({ ...formValues, cpf: e.target.value })
-                        }
-                      />
-                    </Form.Group>
-
-                    <Form.Group as={Col}>
-                      <LabelStyled>RG</LabelStyled>
-                      <InputMask
-                        mask="99.999.999-9"
-                        className="form-control"
-                        type="text"
-                        placeholder="Digite seu RG"
-                        value={formValues?.rg || ''}
-                        onChange={e =>
-                          setFormValues({ ...formValues, rg: e.target.value })
+                          setFormValues({ ...formValues, cnpj: e.target.value })
                         }
                       />
                     </Form.Group>
@@ -246,7 +213,7 @@ function RegisterEmployee() {
                       <LabelStyled>Logradouro</LabelStyled>
                       <Form.Control
                         type="text"
-                        placeholder="Digite seu logradouro"
+                        placeholder="Digite o logradouro"
                         name="street"
                         disabled={fieldDisabled}
                         required
@@ -317,7 +284,7 @@ function RegisterEmployee() {
                       <LabelStyled>Cidade</LabelStyled>
                       <Form.Control
                         type="text"
-                        placeholder="Digite sua cidade"
+                        placeholder="Digite a cidade"
                         disabled={fieldDisabled}
                         name="city"
                         value={formValues?.city || ''}
@@ -336,32 +303,22 @@ function RegisterEmployee() {
                         onChange={e =>
                           setFormValues({ ...formValues, state: e })
                         }
-                        placeholder="Selecione seu estado"
+                        placeholder="Selecione o estado"
                       />
                     </Form.Group>
                   </Form.Row>
 
                   <Form.Row>
                     <Form.Group as={Col}>
-                      <LabelStyled>Tipo de usuário</LabelStyled>
+                      <LabelStyled>Categoria da Clínica</LabelStyled>
                       <Select
-                        options={rolesValues}
-                        value={formValues?.role}
+                        options={medicineCategoriesValues}
+                        isMulti
+                        value={formValues?.categories}
                         onChange={e =>
-                          setFormValues({ ...formValues, role: e })
+                          setFormValues({ ...formValues, categories: e })
                         }
-                        placeholder="Selecione o tipo de usuário"
-                      />
-                    </Form.Group>
-                    <Form.Group as={Col}>
-                      <LabelStyled>Estabelecimento</LabelStyled>
-                      <Select
-                        options={establishments}
-                        value={formValues?.establishment}
-                        onChange={e =>
-                          setFormValues({ ...formValues, establishment: e })
-                        }
-                        placeholder="Selecione o estabelecimento"
+                        placeholder="Selecione a categoria da clínica"
                       />
                     </Form.Group>
                   </Form.Row>
@@ -385,4 +342,4 @@ function RegisterEmployee() {
   );
 }
 
-export default RegisterEmployee;
+export default RegisterEstablishment;
