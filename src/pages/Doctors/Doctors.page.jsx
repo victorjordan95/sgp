@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
@@ -18,7 +19,9 @@ const siteMap = [
 
 const columns = [
   {
-    name: 'Nome',
+    name: 'Médico',
+    button: true,
+    cell: row => <Link to={`/medico/${row.id}`}>{row.name}</Link>,
     selector: 'name',
     sortable: true,
   },
@@ -48,9 +51,12 @@ const columns = [
   },
 ];
 
-const fetchUsers = async (page = 1) => {
+const fetchUsers = async (page, userEstab) => {
   try {
-    const result = await api.get(`/doctors?page=${page}`, authToken());
+    const result = await api.get(
+      `/doctors?page=${page}&userEstab=${userEstab}`,
+      authToken()
+    );
     return result.data;
   } catch (err) {
     toast.error(err?.response?.data?.error);
@@ -59,16 +65,18 @@ const fetchUsers = async (page = 1) => {
 };
 
 const Doctors = () => {
+  const userEstabs = localStorage.getItem('userEstabs');
+
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    fetchUsers().then(res => {
+    fetchUsers(1, [userEstabs]).then(res => {
       setUsers(res);
       setLoading(false);
     });
-  }, []);
+  }, [userEstabs]);
 
   const handlePageChange = e => {
     fetchUsers(e).then(res => {

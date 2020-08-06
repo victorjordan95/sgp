@@ -17,6 +17,7 @@ function App() {
 
   const logout = () => {
     localStorage.removeItem('sgp-token');
+    localStorage.removeItem('userEstabs');
     setLoggedUser({});
   };
 

@@ -233,7 +233,10 @@ function Login(props) {
         `/users/${loggedUser.data.user.id}`,
         authToken()
       );
-      console.log(userData);
+      localStorage.setItem(
+        'userEstabs',
+        userData?.data?.establishments?.map(estab => estab.id)
+      );
       currentlyUser.handleUserContext(userData.data);
     } catch (err) {
       toast.error(err?.response?.data?.error);

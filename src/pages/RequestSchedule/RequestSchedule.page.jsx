@@ -91,7 +91,7 @@ const RequestSchedule = () => {
             <button
               type="button"
               className="btn btn-light"
-              onClick={() => handleRequest({ id: row.id, status: 'AGENDADO' })}
+              onClick={() => handleRequest({ id: row.id, status: 2 })}
             >
               <FiCheck size={24} />
             </button>

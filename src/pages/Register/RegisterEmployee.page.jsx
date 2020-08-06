@@ -2,13 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import InputMask from 'react-input-mask';
 import Select from 'react-select';
-import cep from 'cep-promise';
 import { toast } from 'react-toastify';
 import { FiSave } from 'react-icons/fi';
 
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 import { removeSpecial } from '../../utils/removeSpecialCharacters';
+import fetchZipCode from '../../utils/fetchZipCode';
+
 import userContext from '../../store/UserContext';
 
 import Breadcrumb from '../../components/Breadcrumb';
@@ -46,8 +47,12 @@ function RegisterEmployee() {
 
   const fetchZipcode = async () => {
     let zip;
+    let locale;
     try {
-      zip = await cep(formValues.zipcode);
+      zip = await fetchZipCode(formValues.zipcode);
+      locale = await api.get(
+        `/city?cityName=${zip.city}&stateName=${zip.state}`
+      );
     } catch (error) {
       toast.error(error);
     }
@@ -55,11 +60,8 @@ function RegisterEmployee() {
     if (zip) {
       setFormValues({
         ...formValues,
-        zip: zip.cep,
-        city: zip.city,
-        state: stateValues.filter(state => state.value === zip?.state),
-        neighborhood: zip.neighborhood,
-        street: zip.street,
+        ...zip,
+        geometry: locale.data[0].location.coordinates,
       });
     } else {
       setDisabled(true);
@@ -83,7 +85,7 @@ function RegisterEmployee() {
       complement: formValues.complement,
       city: formValues.city,
       state: formValues?.state?.value,
-      role: [formValues?.role?.id],
+      role: [3],
       establishments: [formValues?.establishment?.value],
       country: 'BR',
     };

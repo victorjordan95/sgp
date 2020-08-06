@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import cep from 'cep-promise';
 
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import InputMask from 'react-input-mask';
@@ -13,6 +12,7 @@ import api from '../../services/api';
 
 import stateValues from '../../utils/brStatesValues';
 import { removeSpecial } from '../../utils/removeSpecialCharacters';
+import fetchZipCode from '../../utils/fetchZipCode';
 
 import LabelStyled from '../../styles/LabelForm';
 
@@ -51,21 +51,11 @@ function Register(props) {
   const [fieldDisabled, setDisabled] = useState(true);
 
   const fetchZipcode = async () => {
-    let zip;
-    try {
-      zip = await cep(formValues.zipcode);
-    } catch (error) {
-      toast.error(error);
-    }
-
+    const zip = await fetchZipCode(formValues.zipcode);
     if (zip) {
       setFormValues({
         ...formValues,
-        zip: zip.cep,
-        city: zip.city,
-        state: stateValues.filter(state => state.value === zip?.state),
-        neighborhood: zip.neighborhood,
-        street: zip.street,
+        ...zip,
       });
     } else {
       setDisabled(true);
