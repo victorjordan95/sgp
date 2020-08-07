@@ -119,6 +119,7 @@ function Establishment() {
               <Map
                 center={[userLocale?.lat || 45.4, userLocale?.lng || -75.7]}
                 zoom={12}
+                className="mt-4"
                 style={{ width: '100%', height: '65vh' }}
               >
                 <TileLayer
