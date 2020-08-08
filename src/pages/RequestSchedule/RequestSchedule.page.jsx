@@ -43,17 +43,6 @@ const RequestSchedule = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState({ option: 'name' });
 
-  const handleRequest = async status => {
-    setLoading(true);
-    try {
-      await api.put(`/schedule-requests`, status, authToken());
-      toast.success('Agendamento aprovado!');
-    } catch (err) {
-      toast.error(err?.response?.data?.error);
-    }
-    setLoading(false);
-  };
-
   const columns = [
     {
       name: 'Nome',
@@ -91,7 +80,13 @@ const RequestSchedule = () => {
             <button
               type="button"
               className="btn btn-light"
-              onClick={() => handleRequest({ id: row.id, status: 2 })}
+              onClick={() =>
+                handleRequest({
+                  id: row.id,
+                  status: 2,
+                  message: 'Agendamento realizado!',
+                })
+              }
             >
               <FiCheck size={24} />
             </button>
@@ -107,7 +102,13 @@ const RequestSchedule = () => {
             <button
               type="button"
               className="btn btn-light"
-              onClick={() => handleRequest({ id: row.id, status: 'RECUSADO' })}
+              onClick={() =>
+                handleRequest({
+                  id: row.id,
+                  status: 4,
+                  message: 'Agendamento recusado!',
+                })
+              }
             >
               <FiSlash size={24} />
             </button>
@@ -139,6 +140,18 @@ const RequestSchedule = () => {
       setRequests(res);
       setLoading(false);
     });
+  };
+
+  const handleRequest = async status => {
+    setLoading(true);
+    try {
+      await api.put(`/schedule-requests`, status, authToken());
+      searchRequests();
+      toast.success(status.message);
+    } catch (err) {
+      toast.error(err?.response?.data?.error);
+    }
+    setLoading(false);
   };
 
   return loading ? (

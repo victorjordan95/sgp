@@ -17,6 +17,7 @@ import userContext from '../../store/UserContext';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 import Roles from '../../enums/Roles.enum';
+import AppointmentStatus from '../../enums/AppointmentStatus.enum';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
@@ -28,6 +29,10 @@ const StyledMain = styled.main`
   display: inline-flex;
   height: 100vh;
   width: calc(100vw - 250px);
+`;
+
+const SelectStyled = styled(Select)`
+  z-index: 999999;
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -86,6 +91,7 @@ function Agenda() {
   const [selectedPatient, setSelectedPatient] = useState();
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const [clickedEvent, setClickedEvent] = useState();
 
   const fetchMonthSchedules = useCallback(
@@ -183,8 +189,6 @@ function Agenda() {
   useEffect(fetchData, [currentlyUser]);
 
   const handleChangeMonth = (date, view) => {
-    console.log('#### date=', date);
-    console.log('#### view=', view);
     if (view === 'month') fetchMonthSchedules(date);
   };
 
@@ -219,6 +223,23 @@ function Agenda() {
     setShow(true);
   };
 
+  const handleSelectEvent = e => {
+    setClickedEvent(e);
+    setShowInfo(true);
+    console.log(e);
+  };
+
+  const handleRequest = async (status, message) => {
+    const request = { id: clickedEvent?.id, status };
+    try {
+      await api.put(`/schedule-requests`, request, authToken());
+      toast.success(message);
+    } catch (err) {
+      toast.error(err?.response?.data?.error);
+    }
+    setLoading(false);
+  };
+
   return (
     <div>
       {loading && <Loader />}
@@ -229,7 +250,7 @@ function Agenda() {
             <Breadcrumb siteMap={siteMap} />
             <Col xs={12} md={4} className="mb-4">
               {doctors && (
-                <Select
+                <SelectStyled
                   options={doctors}
                   value={selectedDoctor}
                   onChange={e => handleChangeDoctor(e)}
@@ -245,13 +266,17 @@ function Agenda() {
                   selectable
                   startAccessor="start"
                   endAccessor="end"
+                  onSelectEvent={e => handleSelectEvent(e)}
                   onSelectSlot={e => handleClickEvent(e)}
                   eventPropGetter={event => {
                     const newStyle = {
                       color: 'white',
                     };
-                    if (Number(event.status) === 5) {
-                      newStyle.backgroundColor = 'lightgreen';
+                    if (Number(event.status) === AppointmentStatus.CANCELADO) {
+                      newStyle.backgroundColor = '#c62828';
+                    }
+                    if (Number(event.status) === AppointmentStatus.REALIZADO) {
+                      newStyle.backgroundColor = '#4caf50';
                     }
 
                     return {
@@ -300,6 +325,45 @@ function Agenda() {
             </Button>
             <Button variant="primary" onClick={handleSubmit}>
               Agendar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={showInfo}
+          onHide={() => setShowInfo(false)}
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Consulta de {clickedEvent?.title} </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Selecione uma ação!</Modal.Body>
+          <Modal.Footer>
+            <Button variant="default" onClick={() => setShowInfo(false)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                handleRequest(
+                  AppointmentStatus.CANCELADO,
+                  'Agendamento cancelado!'
+                )
+              }
+            >
+              Cancelar agendamento
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() =>
+                handleRequest(
+                  AppointmentStatus.REALIZADO,
+                  'Agendamento realizado!'
+                )
+              }
+            >
+              Atendido
             </Button>
           </Modal.Footer>
         </Modal>
