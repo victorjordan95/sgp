@@ -84,7 +84,7 @@ function RegisterEmployee() {
       number: formValues.number,
       complement: formValues.complement,
       city: formValues.city,
-      state: formValues?.state?.value,
+      state: formValues?.state[0].value,
       role: [3],
       establishments: [formValues?.establishment?.value],
       country: 'BR',

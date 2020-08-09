@@ -30,7 +30,7 @@ const StyledNav = styled.nav`
   padding: 16px;
   position: fixed;
   width: 100vw;
-  z-index: 10;
+  z-index: 1000;
   @media screen and (min-width: 1024px) {
     padding: 16px 32px;
   }
@@ -40,6 +40,12 @@ const StyledNav = styled.nav`
     display: flex;
     justify-content: space-between;
     width: 130px;
+    h3 {
+      display: none;
+      @media screen and (min-width: 1024px) {
+        display: block;
+      }
+    }
 
     button {
       align-self: flex-start;
@@ -63,6 +69,20 @@ const StyledNav = styled.nav`
         color: #000;
         background-color: #ffffff;
         border-color: #ffffff;
+        @media screen and (min-width: 1024px) {
+          display: flex;
+          flex-flow: row nowrap;
+          justify-content: center;
+          align-items: center;
+          width: 160px;
+        }
+
+        .dropdown-username {
+          display: none;
+          @media screen and (min-width: 1024px) {
+            display: block;
+          }
+        }
       }
     }
   }
@@ -77,9 +97,9 @@ const StyledAside = styled.aside`
   position: absolute;
   transition: all ease 0.5s;
   position: fixed;
-  top: 80px;
+  top: 72px;
   width: 210px;
-  z-index: 5;
+  z-index: 999;
 
   + main {
     display: inline-flex;
@@ -89,7 +109,7 @@ const StyledAside = styled.aside`
     padding: 32px 8px;
     padding-right: 12px;
     transition: all ease 0.5s;
-    top: 80px;
+    top: 72px;
     position: relative;
     width: 100%;
     @media screen and (min-width: 1024px) {
@@ -185,7 +205,7 @@ function Header() {
   const currentlyUser = useContext(userContext);
   const userRole = currentlyUser?.user?.Role?.role;
 
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(window.innerWidth <= 1024);
   const [notifications, setNotifications] = useState(0);
 
   useEffect(() => {
@@ -231,13 +251,17 @@ function Header() {
             </NotificationDropdown>
           )}
 
-          <AvatarPicture
-            path={currentlyUser?.user?.avatar?.url}
-            size="small"
-            description={currentlyUser?.user?.name}
-          />
           <Dropdown>
-            <Dropdown.Toggle>{currentlyUser?.user?.name}</Dropdown.Toggle>
+            <Dropdown.Toggle>
+              <AvatarPicture
+                path={currentlyUser?.user?.avatar?.url}
+                size="small"
+                description={currentlyUser?.user?.name}
+              />
+              <span className="dropdown-username">
+                {currentlyUser?.user?.name}
+              </span>
+            </Dropdown.Toggle>
 
             <Dropdown.Menu>
               <NavLink

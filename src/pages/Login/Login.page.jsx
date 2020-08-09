@@ -108,6 +108,7 @@ const LoginFormStyled = styled.section`
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
+  padding: 24px 40px 0;
   width: 100vw;
 
   @media screen and (min-width: 1000px) {
@@ -339,12 +340,6 @@ function Login(props) {
             Entrar
           </button>
         </Form>
-
-        <span className="separator">OU</span>
-
-        <span className="create-link">
-          Novo no SGP? <Link to="cadastro">Criar conta</Link>
-        </span>
       </LoginFormStyled>
     </LoginPageStyled>
   );

@@ -11,27 +11,10 @@ import api from '../../../services/api';
 import authToken from '../../../utils/authToken';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import StyledCalendar from '../../../styles/StyledCalendar';
 
 const localizer = momentLocalizer(moment);
 moment.locale('pt-br');
-
-const StyledCalendar = styled(Calendar)`
-  .rbc-toolbar-label {
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-  .rbc-current-time-indicator {
-    height: 2px;
-    background-color: #d32f2f;
-  }
-  .rbc-header {
-    text-transform: capitalize;
-  }
-  .rbc-agenda-date-cell {
-    text-transform: capitalize;
-    vertical-align: middle !important;
-  }
-`;
 
 function AvailableAgenda({ doctorId, doctorInfo }) {
   const currentlyUser = useContext(userContext);

@@ -6,6 +6,10 @@ import styled from 'styled-components';
 const StyledBreadcrumb = styled.nav`
   .breadcrumb {
     background-color: #fafafa;
+    margin-bottom: 16px;
+    @media screen and (min-width: 1024px) {
+      margin-bottom: 3rem !important;
+    }
   }
 `;
 
@@ -15,7 +19,7 @@ function Dashboard({ siteMap }) {
       <Row>
         <Col xs={12}>
           <StyledBreadcrumb aria-label="breadcrumb">
-            <ol className="breadcrumb mb-5">
+            <ol className="breadcrumb">
               {siteMap.map((breadcrumb, key) => {
                 if (key + 1 === siteMap.length) {
                   return (

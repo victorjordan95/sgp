@@ -64,6 +64,7 @@ function Register(props) {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    const [, estab] = window.location.search.split('?establishment=');
 
     const user = {
       name: formValues.name,
@@ -77,8 +78,9 @@ function Register(props) {
       number: formValues.number,
       complement: formValues.complement,
       city: formValues.city,
-      state: formValues.state.value,
+      state: formValues?.state[0]?.value,
       country: 'BR',
+      establishments: [Number(estab)],
       role: 4,
     };
 

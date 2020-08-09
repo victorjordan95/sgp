@@ -32,4 +32,11 @@ export default createGlobalStyle`
       color: #004d40;
     }
   }
+
+  h1 {
+    font-size: 1.75rem;
+    @media screen and (min-width: 1024px) {
+      font-size: 2.5rem;
+    }
+  }
 `;

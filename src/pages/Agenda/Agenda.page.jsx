@@ -23,6 +23,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
 
+import StyledCalendar from '../../styles/StyledCalendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const StyledMain = styled.main`
@@ -33,24 +34,6 @@ const StyledMain = styled.main`
 
 const SelectStyled = styled(Select)`
   z-index: 999999;
-`;
-
-const StyledCalendar = styled(Calendar)`
-  .rbc-toolbar-label {
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-  .rbc-current-time-indicator {
-    height: 2px;
-    background-color: #d32f2f;
-  }
-  .rbc-header {
-    text-transform: capitalize;
-  }
-  .rbc-agenda-date-cell {
-    text-transform: capitalize;
-    vertical-align: middle !important;
-  }
 `;
 
 moment.locale('pt-br');
@@ -93,18 +76,19 @@ function Agenda() {
   const [show, setShow] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [clickedEvent, setClickedEvent] = useState();
+  const [currentDate, setCurrentDate] = useState();
 
   const fetchMonthSchedules = useCallback(
-    async (date, doctorId) => {
+    async (date = new Date(), doctorId) => {
       if (currentlyUser?.user?.Role?.role === Roles.DOCTOR) {
         setLoading(true);
         try {
           const { data } = await api.get(`/schedule?date=${date}`, authToken());
-          const formattedDate = data.map(currentDate => {
+          const formattedDate = data.map(cDate => {
             return {
-              ...currentDate,
-              start: moment(currentDate.start).toDate(),
-              end: moment(currentDate.end).toDate(),
+              ...cDate,
+              start: moment(cDate.start).toDate(),
+              end: moment(cDate.end).toDate(),
             };
           });
           setSchedules(formattedDate);
@@ -118,11 +102,11 @@ function Agenda() {
             `/schedule?date=${date}&doctorId=${doctorId}`,
             authToken()
           );
-          const formattedDate = data.map(currentDate => {
+          const formattedDate = data.map(cDate => {
             return {
-              ...currentDate,
-              start: moment(currentDate.start).toDate(),
-              end: moment(currentDate.end).toDate(),
+              ...cDate,
+              start: moment(cDate.start).toDate(),
+              end: moment(cDate.end).toDate(),
             };
           });
           setSchedules(formattedDate);
@@ -189,6 +173,7 @@ function Agenda() {
   useEffect(fetchData, [currentlyUser]);
 
   const handleChangeMonth = (date, view) => {
+    setCurrentDate(date);
     if (view === 'month') fetchMonthSchedules(date);
   };
 
@@ -237,7 +222,8 @@ function Agenda() {
     } catch (err) {
       toast.error(err?.response?.data?.error);
     }
-    setLoading(false);
+    setShowInfo(false);
+    fetchMonthSchedules(currentDate, selectedDoctor.value);
   };
 
   return (
@@ -268,14 +254,15 @@ function Agenda() {
                   endAccessor="end"
                   onSelectEvent={e => handleSelectEvent(e)}
                   onSelectSlot={e => handleClickEvent(e)}
+                  views={['day', 'agenda', 'month']}
                   eventPropGetter={event => {
                     const newStyle = {
                       color: 'white',
                     };
-                    if (Number(event.status) === AppointmentStatus.CANCELADO) {
+                    if (Number(event?.status) === AppointmentStatus.CANCELADO) {
                       newStyle.backgroundColor = '#c62828';
                     }
-                    if (Number(event.status) === AppointmentStatus.REALIZADO) {
+                    if (Number(event?.status) === AppointmentStatus.REALIZADO) {
                       newStyle.backgroundColor = '#4caf50';
                     }
 
@@ -286,7 +273,7 @@ function Agenda() {
                   }}
                   style={{ height: 'calc(100vh' }}
                   messages={messages[0]}
-                  defaultView={window.innerWidth > 768 ? 'month' : 'list'}
+                  defaultView={window.innerWidth > 768 ? 'month' : 'day'}
                   onNavigate={(date, view) => handleChangeMonth(date, view)}
                 />
               )}

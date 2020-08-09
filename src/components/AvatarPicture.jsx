@@ -8,8 +8,8 @@ const StyledAvatar = styled.img`
   margin: 0 auto;
   &.small {
     border: 2px solid #009688;
-    height: 50px;
-    width: 50px;
+    height: 30px;
+    width: 30px;
   }
   &.medium {
     border: 5px solid #009688;

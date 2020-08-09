@@ -27,7 +27,7 @@ const StyledRow = styled(Row)`
 
 const siteMap = [
   { path: 'dashboard', name: 'Início' },
-  { path: '/medico', name: 'Médicos' },
+  { path: '/medicos', name: 'Médicos' },
   { path: '', name: 'Médico' },
 ];
 

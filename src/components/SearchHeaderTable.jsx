@@ -15,7 +15,10 @@ const SearchHeader = styled.div`
   input {
     border-radius: 0;
     margin: 0;
-    min-width: 400px;
+    max-width: 250px;
+    @media screen and (min-width: 1024px) {
+      min-width: 400px;
+    }
   }
   .btn {
     border-radius: 0 4px 4px 0;
