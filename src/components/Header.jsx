@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Badge from 'react-bootstrap/Badge';
 import { MdMenu, MdNotificationsNone } from 'react-icons/md';
 import {
   FiPieChart,
@@ -14,8 +13,6 @@ import { BsNewspaper } from 'react-icons/bs';
 import { NavLink } from 'react-router-dom';
 
 import styled from 'styled-components';
-import api from '../services/api';
-import authToken from '../utils/authToken';
 
 import AvatarPicture from './AvatarPicture';
 
@@ -197,16 +194,16 @@ const NotificationDropdown = styled(NavLink)`
   }
 `;
 
-const fetchNotifications = async () => {
-  return api.get(`/notification-requests`, authToken());
-};
+// const fetchNotifications = async () => {
+//   return api.get(`/notification-requests`, authToken());
+// };
 
 function Header() {
   const currentlyUser = useContext(userContext);
   const userRole = currentlyUser?.user?.Role?.role;
 
   const [toggle, setToggle] = useState(window.innerWidth <= 1024);
-  const [notifications, setNotifications] = useState(0);
+  // const [notifications, setNotifications] = useState(0);
 
   useEffect(() => {
     // if (userRole !== Roles.PACIENT) {

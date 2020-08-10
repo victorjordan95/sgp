@@ -44,7 +44,7 @@ function Profile() {
   const [profilePhoto, setProfilePhoto] = useState('');
   const [newPicture, setNewPicture] = useState('');
   const [loading, setLoading] = useState(false);
-  const [fieldDisabled, setDisabled] = useState(true);
+  // const [fieldDisabled, setDisabled] = useState(true);
 
   const fetchZipcode = async () => {
     const zip = await cep(formValues.zipcode);
@@ -59,7 +59,7 @@ function Profile() {
         street: zip.street,
       });
     } else {
-      setDisabled(true);
+      // setDisabled(true);
     }
 
     const location = await api.get(
@@ -234,7 +234,7 @@ function Profile() {
                     <Form.Group as={Col}>
                       <LabelStyled>Telefone</LabelStyled>
                       <InputMask
-                        mask="(99) 9999-9999"
+                        mask="(99)9999-9999"
                         className="form-control"
                         type="text"
                         placeholder="Digite seu telefone"
@@ -256,7 +256,7 @@ function Profile() {
                     <Form.Group as={Col}>
                       <LabelStyled>Celular</LabelStyled>
                       <InputMask
-                        mask="(99) 99999-9999"
+                        mask="(99)99999-9999"
                         className="form-control"
                         type="text"
                         placeholder="Digite seu celular"

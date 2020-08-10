@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { FiTrash2, FiEdit3, FiPlus } from 'react-icons/fi';
+import { FiPlus } from 'react-icons/fi';
 
 import api from '../../services/api';
 import authToken from '../../utils/authToken';

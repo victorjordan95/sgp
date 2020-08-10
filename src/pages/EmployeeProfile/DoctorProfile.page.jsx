@@ -1,9 +1,8 @@
-import React, { useContext, useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
 
-import userContext from '../../store/UserContext';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 
@@ -46,6 +45,7 @@ function EmployeeProfile(props) {
   const [loading, setLoading] = useState(false);
 
   function fetchData() {
+    setLoading(false);
     const { id } = props.match.params;
     fetchUser(id).then(res => {
       setFormValues(res);

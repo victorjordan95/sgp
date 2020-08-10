@@ -90,10 +90,11 @@ function Appointment() {
       const { data } = await api.get(`/my-appointments-today`, authToken());
       setScheduleToday(data);
       if (data) {
-        const { data } = await api.get(`/my-position`, authToken());
+        const { position } = await api.get(`/my-position`, authToken());
         setMyPosition(
-          data.findIndex(item => item.patient_id === currentlyUser?.user?.id) +
-            1
+          position.findIndex(
+            item => item.patient_id === currentlyUser?.user?.id
+          ) + 1
         );
       }
     } catch (err) {

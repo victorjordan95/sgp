@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import styled from 'styled-components';
+import { momentLocalizer } from 'react-big-calendar';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import 'moment/locale/pt-br';

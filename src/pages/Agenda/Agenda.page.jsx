@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { Container, Row, Col, Modal, Button } from 'react-bootstrap';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { momentLocalizer } from 'react-big-calendar';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
 import moment from 'moment';

@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { Form, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import AwesomeSlider from 'react-awesome-slider';

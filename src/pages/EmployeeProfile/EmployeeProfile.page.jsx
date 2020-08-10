@@ -139,7 +139,7 @@ function EmployeeProfile(props) {
                     <Form.Group as={Col}>
                       <LabelStyled>Telefone</LabelStyled>
                       <InputMask
-                        mask="(99) 9999-9999"
+                        mask="(99)9999-9999"
                         className="form-control"
                         type="text"
                         placeholder="Digite seu telefone"
@@ -159,7 +159,7 @@ function EmployeeProfile(props) {
                     <Form.Group as={Col}>
                       <LabelStyled>Celular</LabelStyled>
                       <InputMask
-                        mask="(99) 99999-9999"
+                        mask="(99)99999-9999"
                         className="form-control"
                         type="text"
                         placeholder="Digite seu celular"

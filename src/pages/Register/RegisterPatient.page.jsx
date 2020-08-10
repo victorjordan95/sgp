@@ -39,6 +39,7 @@ function RegisterEmployee() {
 
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
+  const [locale, setLocale] = useState({});
   const [establishments, setEstablishments] = useState([]);
   const [fieldDisabled, setDisabled] = useState(true);
 
@@ -46,12 +47,13 @@ function RegisterEmployee() {
 
   const fetchZipcode = async () => {
     let zip;
-    let locale;
+    let userLocale;
     try {
       zip = await fetchZipCode(formValues.zipcode);
-      locale = await api.get(
+      userLocale = await api.get(
         `/city?cityName=${zip.city}&stateName=${zip.state[0].value}`
       );
+      setLocale(userLocale.data[0]);
     } catch (error) {
       toast.error(error);
     }
@@ -60,7 +62,7 @@ function RegisterEmployee() {
       setFormValues({
         ...formValues,
         ...zip,
-        geometry: locale.data[0].location.coordinates,
+        geometry: locale?.data[0]?.location?.coordinates,
       });
     } else {
       setDisabled(true);
@@ -72,22 +74,17 @@ function RegisterEmployee() {
     e.preventDefault();
 
     const user = {
-      name: formValues.name,
-      email: formValues.email,
+      ...formValues,
       phone: removeSpecial(formValues.phone),
       cellphone: removeSpecial(formValues.cellphone),
       password: DEFAULT_PASSWORD,
       cpf: removeSpecial(formValues.cpf),
       rg: removeSpecial(formValues.rg),
-      street: formValues.street,
-      number: formValues.number,
-      complement: formValues.complement,
-      city: formValues.city,
       state: formValues?.state[0]?.value,
       role: [4],
+      geometry: locale?.location?.coordinates,
       establishments: [formValues?.establishment?.value],
       country: 'BR',
-      geometry: formValues.geometry,
     };
     try {
       await api.post(`/users`, user, authToken());
@@ -158,7 +155,7 @@ function RegisterEmployee() {
                     <Form.Group as={Col}>
                       <LabelStyled>Telefone</LabelStyled>
                       <InputMask
-                        mask="(99) 9999-9999"
+                        mask="(99)9999-9999"
                         className="form-control"
                         type="text"
                         placeholder="Digite seu telefone"
@@ -176,7 +173,7 @@ function RegisterEmployee() {
                     <Form.Group as={Col}>
                       <LabelStyled>Celular</LabelStyled>
                       <InputMask
-                        mask="(99) 99999-9999"
+                        mask="(99)99999-9999"
                         className="form-control"
                         type="text"
                         placeholder="Digite seu celular"

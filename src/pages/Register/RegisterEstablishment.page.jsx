@@ -51,7 +51,7 @@ function RegisterEstablishment() {
       setFormValues({
         ...formValues,
         ...zip,
-        geometry: locale.data[0].location.coordinates,
+        geometry: locale?.location?.coordinates,
       });
     } else {
       setDisabled(true);
@@ -62,17 +62,14 @@ function RegisterEstablishment() {
     e.preventDefault();
 
     const establishment = {
+      ...formValues,
       name: formValues.name,
       phone: removeSpecial(formValues.phone),
+      geometry: locale?.location?.coordinates,
       cellphone: removeSpecial(formValues.cellphone),
       cnpj: removeSpecial(formValues.cnpj),
-      street: formValues.street,
-      number: formValues.number,
-      complement: formValues.complement,
-      city: formValues.city,
       state: formValues?.state[0]?.value,
       categories: formValues.categories.map(el => el.value),
-      geometry: formValues.geometry,
       country: 'BR',
     };
     try {
@@ -135,7 +132,7 @@ function RegisterEstablishment() {
                     <Form.Group as={Col}>
                       <LabelStyled>Telefone</LabelStyled>
                       <InputMask
-                        mask="(99) 9999-9999"
+                        mask="(99)9999-9999"
                         className="form-control"
                         type="text"
                         placeholder="Digite o telefone"
@@ -153,7 +150,7 @@ function RegisterEstablishment() {
                     <Form.Group as={Col}>
                       <LabelStyled>Celular</LabelStyled>
                       <InputMask
-                        mask="(99) 99999-9999"
+                        mask="(99)99999-9999"
                         className="form-control"
                         type="text"
                         placeholder="Digite o celular"
