@@ -64,6 +64,7 @@ function RegisterEstablishment() {
     const establishment = {
       ...formValues,
       name: formValues.name,
+      zipcode: formValues.zip,
       phone: removeSpecial(formValues.phone),
       geometry: locale?.location?.coordinates,
       cellphone: removeSpecial(formValues.cellphone),
