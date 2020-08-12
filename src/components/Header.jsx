@@ -88,16 +88,32 @@ const StyledNav = styled.nav`
 const StyledAside = styled.aside`
   background: #fff;
   box-shadow: 0 0 6px 0px #424242;
-  display: inline-flex;
+  display: flex;
   height: 100vh;
-  padding-top: 32px;
+  flex-flow: column nowrap;
+  padding: 32px 0 80px;
   position: absolute;
   transition: all ease 0.5s;
   position: fixed;
+  overflow-y: scroll;
   top: 72px;
   width: 210px;
   z-index: 999;
 
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    background-color: #009688;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #009688;
+    border: 2px solid #009688;
+  }
   + main {
     display: inline-flex;
     margin-bottom: 48px;

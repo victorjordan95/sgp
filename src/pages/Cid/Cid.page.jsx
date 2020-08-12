@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
+import removeAccent from '../../utils/removeAccent';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import ExpandedComponent from '../../components/ExpandedComponent';
@@ -57,7 +58,7 @@ const fetchCids = async (page = 1, type = '', name = '') => {
   return false;
 };
 
-const Doctors = () => {
+const Cid = () => {
   const [cid, setCids] = useState();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState({ option: 'name' });
@@ -73,17 +74,19 @@ const Doctors = () => {
   const handlePageChange = e => {
     setLoading(true);
     fetchCids(e).then(res => {
-      setCids(res, search?.option, search?.searchValue);
+      setCids(res, search?.option, removeAccent(search?.searchValue || ''));
       setLoading(false);
     });
   };
 
   const searchCid = () => {
     setLoading(true);
-    fetchCids(1, search?.option, search?.searchValue).then(res => {
-      setCids(res);
-      setLoading(false);
-    });
+    fetchCids(1, search?.option, removeAccent(search?.searchValue)).then(
+      res => {
+        setCids(res);
+        setLoading(false);
+      }
+    );
   };
 
   return loading ? (
@@ -125,4 +128,4 @@ const Doctors = () => {
   );
 };
 
-export default Doctors;
+export default Cid;

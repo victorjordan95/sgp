@@ -10,7 +10,7 @@ const LabelStyled = styled(Form.Label)`
   position: relative;
   padding: 0 5px;
   top: 17px;
-  z-index: 3;
+  z-index: 2;
 `;
 
 export default LabelStyled;

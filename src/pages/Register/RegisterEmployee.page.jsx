@@ -18,8 +18,13 @@ import Loader from '../../components/Loader';
 
 import stateValues from '../../utils/brStatesValues';
 import rolesValues from '../../utils/rolesValues';
+import Roles from '../../enums/Roles.enum';
+import medicineCategoriesValues from '../../utils/medicineCategoriesValues';
+import professionalCoucil from '../../utils/professionalCoucil';
 
 import LabelStyled from '../../styles/LabelForm';
+import StyledTimepicker from '../../styles/StyledTimepicker';
+import StyledSelect from '../../styles/StyledSelect';
 
 const siteMap = [
   { path: 'dashboard', name: 'Início' },
@@ -37,6 +42,7 @@ const fillEstablishments = list => {
 
 function RegisterEmployee() {
   const currentlyUser = useContext(userContext);
+  const userRole = currentlyUser?.user?.Role?.role;
 
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
@@ -364,6 +370,103 @@ function RegisterEmployee() {
                       />
                     </Form.Group>
                   </Form.Row>
+                  {userRole === Roles.DOCTOR && (
+                    <>
+                      <h3 className="mt-4">Informações médicas</h3>
+                      <hr />
+                      <Form.Row>
+                        <Form.Group as={Col}>
+                          <LabelStyled>Categoria especializada</LabelStyled>
+                          <StyledSelect
+                            options={medicineCategoriesValues}
+                            isMulti
+                            value={formValues?.categories}
+                            onChange={e =>
+                              setFormValues({ ...formValues, categories: e })
+                            }
+                            placeholder="Selecione a categoria da clínica"
+                          />
+                        </Form.Group>
+                      </Form.Row>
+
+                      <Form.Row>
+                        <Form.Group as={Col} xs={12} md={6}>
+                          <LabelStyled>Conselho profissional</LabelStyled>
+                          <StyledSelect
+                            options={professionalCoucil}
+                            value={formValues?.professionalCoucil}
+                            onChange={e =>
+                              setFormValues({
+                                ...formValues,
+                                professionalCoucil: e,
+                              })
+                            }
+                            placeholder="Selecione o conselho"
+                          />
+                        </Form.Group>
+                        <Form.Group as={Col} xs={12} md={6}>
+                          <LabelStyled>
+                            Número conselho profissional
+                          </LabelStyled>
+                          <Form.Control
+                            type="text"
+                            placeholder="Digite o número do seu conselho"
+                            name="coucilNumber"
+                            value={
+                              formValues?.coucilNumber ||
+                              currentlyUser?.user?.coucilNumber
+                            }
+                            onChange={e =>
+                              setFormValues({
+                                ...formValues,
+                                coucilNumber: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                      </Form.Row>
+
+                      <Form.Row>
+                        <Form.Group as={Col} xs={12} md={4}>
+                          <LabelStyled>Hora início trabalho</LabelStyled>
+                          <StyledTimepicker
+                            locale="sv-sv"
+                            className="form-control"
+                            onChange={e =>
+                              setFormValues({ ...formValues, startHour: e })
+                            }
+                            value={formValues?.startHour}
+                          />
+                        </Form.Group>
+                        <Form.Group as={Col} xs={12} md={4}>
+                          <LabelStyled>Hora término trabalho</LabelStyled>
+                          <StyledTimepicker
+                            locale="sv-sv"
+                            className="form-control"
+                            onChange={e =>
+                              setFormValues({ ...formValues, endHour: e })
+                            }
+                            value={formValues?.endHour}
+                          />
+                        </Form.Group>
+                        <Form.Group as={Col} xs={12} md={4}>
+                          <LabelStyled>Tempo de consulta</LabelStyled>
+                          <StyledTimepicker
+                            locale="sv-sv"
+                            disableClock
+                            className="form-control"
+                            onChange={e =>
+                              setFormValues({
+                                ...formValues,
+                                appointmentTime: e,
+                              })
+                            }
+                            value={formValues?.appointmentTime}
+                          />
+                        </Form.Group>
+                      </Form.Row>
+                    </>
+                  )}
                   <Form.Row className="d-flex flex-row justify-content-end my-3">
                     <Button
                       variant="primary"

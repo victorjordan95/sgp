@@ -5,7 +5,6 @@ import InputMask from 'react-input-mask';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { FiSave } from 'react-icons/fi';
-import cep from 'cep-promise';
 
 import userContext from '../../store/UserContext';
 import api from '../../services/api';
@@ -18,8 +17,14 @@ import Header from '../../components/Header';
 import Loader from '../../components/Loader';
 
 import stateValues from '../../utils/brStatesValues';
+import Roles from '../../enums/Roles.enum';
+import medicineCategoriesValues from '../../utils/medicineCategoriesValues';
+import professionalCoucil from '../../utils/professionalCoucil';
+import fetchZipCode from '../../utils/fetchZipCode';
 
 import LabelStyled from '../../styles/LabelForm';
+import StyledTimepicker from '../../styles/StyledTimepicker';
+import StyledSelect from '../../styles/StyledSelect';
 
 const ChangeFormRow = styled(Form.Row)`
   align-items: center;
@@ -38,38 +43,38 @@ const siteMap = [
 
 function Profile() {
   const currentlyUser = useContext(userContext);
+  const userRole = currentlyUser?.user?.Role?.role;
 
   const [formValues, setFormValues] = useState({});
-  const [geometry, setUserGeometry] = useState({});
+  const [locale, setLocale] = useState({});
   const [profilePhoto, setProfilePhoto] = useState('');
   const [newPicture, setNewPicture] = useState('');
   const [loading, setLoading] = useState(false);
-  // const [fieldDisabled, setDisabled] = useState(true);
+  const [fieldDisabled, setDisabled] = useState(true);
 
   const fetchZipcode = async () => {
-    const zip = await cep(formValues.zipcode);
+    let zip;
+    try {
+      zip = await fetchZipCode(formValues.zipcode);
+      const userLocale = await api.get(
+        `/city?cityName=${zip.city}&stateName=${zip.state}`
+      );
+      setLocale(userLocale.data[0]);
+    } catch (error) {
+      toast.error(error);
+    }
 
     if (zip) {
       setFormValues({
         ...formValues,
-        zip: zip.cep,
-        city: zip.city,
-        state: stateValues.filter(state => state.value === zip?.state),
-        neighborhood: zip.neighborhood,
-        street: zip.street,
+        ...zip,
+        geometry: locale?.location?.coordinates,
       });
-    } else {
-      // setDisabled(true);
     }
 
-    const location = await api.get(
-      `/city?cityName=${zip.city}&stateName=${zip.state}`
-    );
-
-    setUserGeometry([
-      location.data[0]?.location?.coordinates[0],
-      location.data[0]?.location?.coordinates[1],
-    ]);
+    if (!zip.logradouro || !zip.bairro) {
+      setDisabled(false);
+    }
   };
 
   const handleProfile = e => {
@@ -118,11 +123,25 @@ function Profile() {
       setLoading(false);
     }
 
+    const user = {
+      ...formValues,
+    };
+
+    if (formValues?.state?.[0]?.value) {
+      user.state = formValues?.state[0].value;
+    }
+    if (formValues?.geometry) {
+      user.geometry = locale?.location?.coordinates;
+    }
+    if (formValues?.professional_coucil) {
+      user.professional_coucil = formValues?.professional_coucil?.value;
+    }
+    if (formValues?.categories) {
+      user.categories = formValues?.categories?.map(el => el.value);
+    }
+    console.log(user);
     try {
-      const newValues = formValues?.state[0]?.value
-        ? { ...formValues, state: formValues.state[0].value }
-        : formValues;
-      await api.put('/users', { ...newValues, geometry }, authToken());
+      await api.put('/users', user, authToken());
       toast.success('Perfil salvo com sucesso!');
       setLoading(false);
     } catch (err) {
@@ -314,7 +333,7 @@ function Profile() {
                   </Form.Row>
 
                   <Form.Row>
-                    <Form.Group as={Col}>
+                    <Form.Group as={Col} xs={12} md={4}>
                       <LabelStyled>CEP</LabelStyled>
                       <InputMask
                         mask="99999-999"
@@ -337,11 +356,12 @@ function Profile() {
                       />
                     </Form.Group>
 
-                    <Form.Group as={Col}>
+                    <Form.Group as={Col} xs={6} md={4}>
                       <LabelStyled>Logradouro</LabelStyled>
                       <Form.Control
                         type="text"
                         placeholder="Digite seu logradouro"
+                        disabled={fieldDisabled}
                         name="street"
                         required
                         value={
@@ -357,7 +377,7 @@ function Profile() {
                       />
                     </Form.Group>
 
-                    <Form.Group as={Col}>
+                    <Form.Group as={Col} xs={6} md={4}>
                       <LabelStyled>Número</LabelStyled>
                       <Form.Control
                         type="text"
@@ -387,7 +407,8 @@ function Profile() {
                         name="complement"
                         value={
                           formValues?.complement ||
-                          currentlyUser?.user?.address_pk?.complement
+                          currentlyUser?.user?.address_pk?.complement ||
+                          ''
                         }
                         onChange={e =>
                           setFormValues({
@@ -402,6 +423,7 @@ function Profile() {
                       <Form.Control
                         type="text"
                         placeholder="Digite o bairro"
+                        disabled={fieldDisabled}
                         name="neighborhood"
                         value={
                           formValues?.neighborhood ||
@@ -423,6 +445,7 @@ function Profile() {
                       <Form.Control
                         type="text"
                         placeholder="Digite sua cidade"
+                        disabled={fieldDisabled}
                         name="city"
                         value={
                           formValues?.city ||
@@ -453,6 +476,117 @@ function Profile() {
                       />
                     </Form.Group>
                   </Form.Row>
+
+                  {userRole === Roles.DOCTOR && (
+                    <>
+                      <h3 className="mt-4">Informações médicas</h3>
+                      <hr />
+                      <Form.Row>
+                        <Form.Group as={Col}>
+                          <LabelStyled>Categoria especializada</LabelStyled>
+                          <StyledSelect
+                            options={medicineCategoriesValues}
+                            isMulti
+                            value={formValues?.categories}
+                            onChange={e =>
+                              setFormValues({ ...formValues, categories: e })
+                            }
+                            placeholder="Selecione a categoria da clínica"
+                          />
+                        </Form.Group>
+                      </Form.Row>
+
+                      <Form.Row>
+                        <Form.Group as={Col} xs={12} md={6}>
+                          <LabelStyled>Conselho profissional</LabelStyled>
+                          <StyledSelect
+                            options={professionalCoucil}
+                            value={
+                              formValues?.professional_coucil ||
+                              currentlyUser?.user?.professional_coucil
+                            }
+                            onChange={e =>
+                              setFormValues({
+                                ...formValues,
+                                professional_coucil: e,
+                              })
+                            }
+                            placeholder="Selecione o conselho"
+                          />
+                        </Form.Group>
+                        <Form.Group as={Col} xs={12} md={6}>
+                          <LabelStyled>
+                            Número conselho profissional
+                          </LabelStyled>
+                          <Form.Control
+                            type="text"
+                            placeholder="Digite o número do seu conselho"
+                            name="coucil_number"
+                            value={
+                              formValues?.coucil_number ||
+                              currentlyUser?.user?.coucil_number
+                            }
+                            onChange={e =>
+                              setFormValues({
+                                ...formValues,
+                                coucil_number: e.target.value,
+                              })
+                            }
+                          />
+                        </Form.Group>
+                      </Form.Row>
+
+                      <Form.Row>
+                        <Form.Group as={Col} xs={12} md={4}>
+                          <LabelStyled>Hora início trabalho</LabelStyled>
+                          <StyledTimepicker
+                            locale="sv-sv"
+                            className="form-control"
+                            onChange={e =>
+                              setFormValues({ ...formValues, start_hour: e })
+                            }
+                            value={
+                              formValues?.start_hour ||
+                              currentlyUser?.user?.start_hour
+                            }
+                          />
+                        </Form.Group>
+                        <Form.Group as={Col} xs={12} md={4}>
+                          <LabelStyled>Hora término trabalho</LabelStyled>
+                          <StyledTimepicker
+                            locale="sv-sv"
+                            className="form-control"
+                            onChange={e =>
+                              setFormValues({ ...formValues, end_hour: e })
+                            }
+                            value={
+                              formValues?.end_hour ||
+                              currentlyUser?.user?.end_hour
+                            }
+                          />
+                        </Form.Group>
+                        <Form.Group as={Col} xs={12} md={4}>
+                          <LabelStyled>Tempo de consulta</LabelStyled>
+                          <StyledTimepicker
+                            locale="sv-sv"
+                            disableClock
+                            className="form-control"
+                            onChange={e =>
+                              setFormValues({
+                                ...formValues,
+                                appointment_time: e,
+                              })
+                            }
+                            value={
+                              formValues?.appointment_time ||
+                              currentlyUser?.user?.appointment_time
+                            }
+                          />
+                        </Form.Group>
+                      </Form.Row>
+                    </>
+                  )}
+
                   <Form.Row className="d-flex flex-row justify-content-end my-3">
                     <Button
                       variant="primary"

@@ -53,7 +53,7 @@ export default ({
             placeholder || 'Selecione por qual coluna deseja filtrar'
           }
           className="form-control"
-          value={search?.searchValue}
+          value={search?.searchValue || ''}
           onChange={e =>
             setSearch({
               ...search,

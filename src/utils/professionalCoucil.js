@@ -1,0 +1,16 @@
+export default [
+  { value: 1, label: 'CREA' },
+  { value: 2, label: 'CAU' },
+  { value: 3, label: 'CRBIO' },
+  { value: 4, label: 'CRMV' },
+  { value: 5, label: 'CRM' },
+  { value: 6, label: 'CRP' },
+  { value: 7, label: 'CRF' },
+  { value: 8, label: 'CRO' },
+  { value: 9, label: 'Crefito' },
+  { value: 10, label: 'Crefono' },
+  { value: 11, label: 'CRQ' },
+  { value: 12, label: 'CRN' },
+  { value: 13, label: 'CREF' },
+  { value: 14, label: 'COREN' },
+];
