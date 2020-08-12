@@ -40,9 +40,7 @@ const map = {
 };
 
 function removeAccent(s) {
-  return s.replace(/[\W[\] ]/g, (a) {
-    return map[a] || a;
-  });
+  return s.replace(/[\W[\] ]/g, a => map[a] || a);
 }
 
 export default removeAccent;
