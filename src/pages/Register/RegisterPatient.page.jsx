@@ -62,7 +62,7 @@ function RegisterEmployee() {
       setFormValues({
         ...formValues,
         ...zip,
-        geometry: locale?.data[0]?.location?.coordinates,
+        geometry: locale?.location?.coordinates,
       });
     } else {
       setDisabled(true);

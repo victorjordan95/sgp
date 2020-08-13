@@ -309,7 +309,7 @@ function Header() {
                 <span className="aside-page-name">Dashboard</span>
               </NavLink>
             </li>
-            {(userRole === Roles.DOCTOR || userRole === Roles.EMPLOYEE) && (
+            {userRole !== Roles.PATIENT && (
               <li>
                 <NavLink to="/agenda" activeClassName="active">
                   <FiCalendar size={24} />
@@ -331,12 +331,6 @@ function Header() {
               <NavLink to="/minhas-consultas" activeClassName="active">
                 <FiCalendar size={24} />
                 <span className="aside-page-name">Consultas</span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/exames" activeClassName="active">
-                <BsNewspaper size={24} />
-                <span className="aside-page-name">Exames</span>
               </NavLink>
             </li>
           </ul>

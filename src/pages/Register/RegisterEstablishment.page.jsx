@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -28,6 +29,7 @@ const siteMap = [
 
 function RegisterEstablishment() {
   const currentlyUser = useContext(userContext);
+  const history = useHistory();
 
   const [formValues, setFormValues] = useState({});
   const [locale, setLocale] = useState({});
@@ -70,7 +72,7 @@ function RegisterEstablishment() {
       cellphone: removeSpecial(formValues.cellphone),
       cnpj: removeSpecial(formValues.cnpj),
       state: formValues?.state[0]?.value,
-      categories: formValues.categories.map(el => el.value),
+      categories: formValues?.categories?.map(el => el.value),
       country: 'BR',
     };
     try {
@@ -89,9 +91,10 @@ function RegisterEstablishment() {
         },
         authToken()
       );
-      toast.success('Perfil salvo com sucesso!');
+      toast.success('Estabelecimento salvo com sucesso!');
       setLoading(false);
       setFormValues({});
+      history.push(`/estabelecimentos`);
     } catch (err) {
       toast.error(err?.response?.data?.error);
       setLoading(false);

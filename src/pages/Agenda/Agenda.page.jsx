@@ -141,8 +141,8 @@ function Agenda() {
         })
       );
       setSelectedPatient({
-        value: res.data.rows[0].id,
-        label: res.data.rows[0].name,
+        value: res?.data?.rows[0]?.id,
+        label: res?.data?.rows[0]?.name,
       });
     } catch (err) {
       toast.error(err?.response?.data?.error);
@@ -162,7 +162,10 @@ function Agenda() {
             return { value: doctor.id, label: doctor.name };
           })
         );
-        setSelectedDoctor({ value: res.rows[0].id, label: res.rows[0].name });
+        setSelectedDoctor({
+          value: res?.rows[0]?.id,
+          label: res?.rows[0]?.name,
+        });
 
         fetchMonthSchedules(new Date(), res?.rows[0]?.id);
       });
@@ -177,7 +180,7 @@ function Agenda() {
     if (view === 'month') fetchMonthSchedules(date);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async () => {
     const appointment = {
       ...clickedEvent,
       doctor_id: selectedDoctor.value,
