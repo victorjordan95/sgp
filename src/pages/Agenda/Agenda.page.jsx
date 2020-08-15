@@ -6,11 +6,12 @@ import React, {
   useCallback,
 } from 'react';
 import styled from 'styled-components';
-import { Container, Row, Col, Modal, Button } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Button, Form } from 'react-bootstrap';
 import { momentLocalizer } from 'react-big-calendar';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
 import moment from 'moment';
+import CurrencyInput from 'react-currency-masked-input';
 import 'moment/locale/pt-br';
 
 import userContext from '../../store/UserContext';
@@ -18,12 +19,14 @@ import api from '../../services/api';
 import authToken from '../../utils/authToken';
 import Roles from '../../enums/Roles.enum';
 import AppointmentStatus from '../../enums/AppointmentStatus.enum';
+import paymentStatusAppointment from '../../utils/paymentStatusAppointment';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
 
 import StyledCalendar from '../../styles/StyledCalendar';
+import LabelStyled from '../../styles/LabelForm';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const StyledMain = styled.main`
@@ -33,7 +36,7 @@ const StyledMain = styled.main`
 `;
 
 const SelectStyled = styled(Select)`
-  z-index: 999999;
+  z-index: 998;
 `;
 
 moment.locale('pt-br');
@@ -77,6 +80,7 @@ function Agenda() {
   const [showInfo, setShowInfo] = useState(false);
   const [clickedEvent, setClickedEvent] = useState();
   const [currentDate, setCurrentDate] = useState();
+  const [formValues, setFormValues] = useState({});
 
   const fetchMonthSchedules = useCallback(
     async (date = new Date(), doctorId) => {
@@ -206,7 +210,6 @@ function Agenda() {
   };
 
   const handleClickEvent = e => {
-    console.log(e);
     setClickedEvent(e);
     setShow(true);
   };
@@ -214,11 +217,17 @@ function Agenda() {
   const handleSelectEvent = e => {
     setClickedEvent(e);
     setShowInfo(true);
-    console.log(e);
   };
 
   const handleRequest = async (status, message) => {
     const request = { id: clickedEvent?.id, status };
+    const requestPayment = {
+      idAppointment: clickedEvent?.id,
+      value: Number(formValues?.appointmentValue * 10),
+      status: formValues?.appointmentStatus,
+      doctorId: selectedDoctor.value,
+    };
+    console.log(requestPayment);
     try {
       await api.put(`/schedule-requests`, request, authToken());
       toast.success(message);
@@ -257,7 +266,7 @@ function Agenda() {
                   endAccessor="end"
                   onSelectEvent={e => handleSelectEvent(e)}
                   onSelectSlot={e => handleClickEvent(e)}
-                  views={['day', 'agenda', 'month']}
+                  views={['day', 'week', 'month']}
                   eventPropGetter={event => {
                     const newStyle = {
                       color: 'white',
@@ -283,6 +292,7 @@ function Agenda() {
             </Col>
           </Row>
         </Container>
+
         <Modal
           show={show}
           onHide={() => setShow(false)}
@@ -297,7 +307,7 @@ function Agenda() {
               <Select
                 options={patients}
                 value={selectedPatient}
-                onChange={handleChangeDoctor}
+                onChange={e => setSelectedPatient(e)}
                 placeholder="Selecione um paciente"
                 className="mb-3"
               />
@@ -328,7 +338,36 @@ function Agenda() {
           <Modal.Header closeButton>
             <Modal.Title>Consulta de {clickedEvent?.title} </Modal.Title>
           </Modal.Header>
-          <Modal.Body>Selecione uma ação!</Modal.Body>
+          <Modal.Body>
+            <Form.Group as={Col}>
+              <LabelStyled>Valor da consulta</LabelStyled>
+              <CurrencyInput
+                className="form-control"
+                placeholder="Digite o valor da consulta"
+                name="appointmentValue"
+                onChange={e =>
+                  setFormValues({
+                    ...formValues,
+                    appointmentValue: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group as={Col}>
+              <LabelStyled>Forma de pagamento</LabelStyled>
+              <Select
+                options={paymentStatusAppointment}
+                onChange={e =>
+                  setFormValues({
+                    ...formValues,
+                    appointmentStatus: e.value,
+                  })
+                }
+                placeholder="Selecione uma forma de pagamento"
+              />
+            </Form.Group>
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="default" onClick={() => setShowInfo(false)}>
               Cancelar

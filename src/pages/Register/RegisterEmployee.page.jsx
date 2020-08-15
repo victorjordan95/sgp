@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
@@ -43,6 +44,7 @@ const fillEstablishments = list => {
 function RegisterEmployee() {
   const currentlyUser = useContext(userContext);
   const userRole = currentlyUser?.user?.Role?.role;
+  const history = useHistory();
 
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
@@ -97,6 +99,7 @@ function RegisterEmployee() {
       toast.success('Perfil salvo com sucesso!');
       setLoading(false);
       setFormValues({});
+      history.push(`/funcionario`);
     } catch (err) {
       toast.error(err?.response?.data?.error);
       setLoading(false);
@@ -347,7 +350,7 @@ function RegisterEmployee() {
                   </Form.Row>
 
                   <Form.Row>
-                    <Form.Group as={Col}>
+                    <Form.Group as={Col} xs={12} md={6}>
                       <LabelStyled>Tipo de usuário</LabelStyled>
                       <Select
                         options={rolesValues}
@@ -358,7 +361,7 @@ function RegisterEmployee() {
                         placeholder="Selecione o tipo de usuário"
                       />
                     </Form.Group>
-                    <Form.Group as={Col}>
+                    <Form.Group as={Col} xs={12} md={6}>
                       <LabelStyled>Estabelecimento</LabelStyled>
                       <Select
                         options={establishments}

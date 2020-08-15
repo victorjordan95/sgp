@@ -13,7 +13,6 @@ function Dashboard() {
       <main>
         <Container fluid>
           <Row>
-            <Col xs={12}>1 of 1</Col>
             <Col xs={12}>
               <h1>Bem-vindo {currentlyUser?.user?.name}</h1>
             </Col>

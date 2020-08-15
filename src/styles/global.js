@@ -22,6 +22,29 @@ export default createGlobalStyle`
       background-color: #00897b;
       border-color: #00897b;
     }
+
+    &.btn-add {
+      @media screen and (max-width: 1024px) {
+        align-items: center;
+        border-radius: 50%;
+        bottom: 24px;
+        box-shadow: 0 0 3px 1px #424242;
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+        height: 50px;
+        position: fixed;
+        right: 24px;
+        text-align: center;
+        width: 50px;
+        svg {
+          margin-right: 0!important;
+        }
+        span {
+          display:none;
+        }
+      }
+    }
   }
 
   a {

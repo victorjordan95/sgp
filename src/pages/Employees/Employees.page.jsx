@@ -54,7 +54,7 @@ const fetchCids = async (page = 1, type = '', name = '') => {
   return false;
 };
 
-const Employees = props => {
+const Employees = () => {
   const history = useHistory();
   const [search, setSearch] = useState({ option: 'name' });
 
@@ -189,10 +189,10 @@ const Employees = props => {
                     />
                     <Link
                       to="/cadastro-funcionario"
-                      className="btn btn-primary"
+                      className="btn btn-primary btn-add"
                     >
                       <FiPlus size={20} className="mr-2" />
-                      Cadastrar
+                      <span>Cadastrar</span>
                     </Link>
                   </div>
                 }

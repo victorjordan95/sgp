@@ -7,8 +7,11 @@ const SearchHeader = styled.div`
   display: flex;
   height: 50px;
   max-width: 650px;
-  left: -16px;
   position: relative;
+  left: -16px;
+  @media screen and (max-width: 1024px) {
+    width: calc(100% + 16px);
+  }
   select {
     border-radius: 4px 0 0 4px;
   }

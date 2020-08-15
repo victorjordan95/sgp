@@ -34,6 +34,7 @@ function UsersTable({
       minWidth="30"
       expandableRows={expandableRows}
       paginationServer
+      noDataComponent={<p>Nenhum dado cadastrado!</p>}
       paginationComponentOptions={paginationComponentOptions}
       paginationTotalRows={data?.count}
       onChangePage={handlePageChange}

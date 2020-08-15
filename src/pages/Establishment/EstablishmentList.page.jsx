@@ -140,10 +140,10 @@ const EstablishmentList = () => {
                   <div className="d-flex flex-row justify-content-end w-100">
                     <Link
                       to="/cadastro-estabelecimento"
-                      className="btn btn-primary"
+                      className="btn btn-primary btn-add"
                     >
                       <FiPlus size={20} className="mr-2" />
-                      Cadastrar
+                      <span>Cadastrar</span>
                     </Link>
                   </div>
                 }

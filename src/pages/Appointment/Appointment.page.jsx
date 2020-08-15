@@ -67,22 +67,24 @@ function Appointment() {
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(true);
 
-  const fetchMonthSchedules = useCallback(async date => {
+  const fetchMonthSchedules = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await api.get(`/appointments`, authToken());
       const formattedDate = data.map(currentDate => {
         return {
           ...currentDate,
+          title: 'teste',
           start: moment(currentDate.start).toDate(),
           end: moment(currentDate.end).toDate(),
         };
       });
       setSchedules(formattedDate);
+      setLoading(false);
     } catch (err) {
       toast.error(err?.response?.data?.error);
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const fetchTodaySchedule = async () => {
@@ -154,11 +156,13 @@ function Appointment() {
                 <StyledCalendar
                   localizer={localizer}
                   events={schedules}
+                  selectable
                   startAccessor="start"
                   endAccessor="end"
+                  views={['day', 'week', 'month']}
                   style={{ height: 'calc(100vh' }}
                   messages={messages[0]}
-                  defaultView={window.innerWidth > 768 ? 'month' : 'list'}
+                  defaultView={window.innerWidth > 768 ? 'month' : 'day'}
                   onNavigate={(date, view) => handleChangeMonth(date, view)}
                 />
               )}

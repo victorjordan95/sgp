@@ -16,6 +16,7 @@
     "react-awesome-slider": "^4.1.0",
     "react-big-calendar": "^0.26.0",
     "react-bootstrap": "^1.0.1",
+    "react-currency-masked-input": "^2.5.0",
     "react-data-table-component": "^6.9.7",
     "react-date-picker": "^8.0.1",
     "react-dom": "^16.13.1",
