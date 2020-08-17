@@ -222,14 +222,13 @@ function Agenda() {
   const handleRequest = async (status, message) => {
     const request = { id: clickedEvent?.id, status };
     const requestPayment = {
-      idAppointment: clickedEvent?.id,
+      appointment_id: clickedEvent?.id,
       value: Number(formValues?.appointmentValue * 10),
       status: formValues?.appointmentStatus,
-      doctorId: selectedDoctor.value,
     };
-    console.log(requestPayment);
     try {
-      await api.put(`/schedule-requests`, request, authToken());
+      await api.put(`/schedule`, request, authToken());
+      await api.post(`/payment`, requestPayment, authToken());
       toast.success(message);
     } catch (err) {
       toast.error(err?.response?.data?.error);
@@ -388,7 +387,7 @@ function Agenda() {
               onClick={() =>
                 handleRequest(
                   AppointmentStatus.REALIZADO,
-                  'Agendamento realizado!'
+                  'Agendamento atualizado!'
                 )
               }
             >

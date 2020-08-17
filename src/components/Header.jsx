@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { Badge, Modal, Button, Form } from 'react-bootstrap';
 import { MdMenu, MdNotificationsNone } from 'react-icons/md';
 import {
   FiPieChart,
@@ -8,13 +9,24 @@ import {
   FiUsers,
   FiMapPin,
 } from 'react-icons/fi';
-import { FaStethoscope, FaBookMedical, FaRegBuilding } from 'react-icons/fa';
-import { BsNewspaper } from 'react-icons/bs';
+import {
+  FaStethoscope,
+  FaBookMedical,
+  FaRegBuilding,
+  FaRegMoneyBillAlt,
+  FaNotesMedical,
+} from 'react-icons/fa';
+import copy from 'copy-to-clipboard';
 import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import styled from 'styled-components';
 
+import api from '../services/api';
+import authToken from '../utils/authToken';
+
 import AvatarPicture from './AvatarPicture';
+import LabelStyled from '../styles/LabelForm';
 
 import userContext from '../store/UserContext';
 import Roles from '../enums/Roles.enum';
@@ -210,32 +222,37 @@ const NotificationDropdown = styled(NavLink)`
   }
 `;
 
-// const fetchNotifications = async () => {
-//   return api.get(`/notification-requests`, authToken());
-// };
+const fetchNotifications = async () => {
+  return api.get(`/notification-requests`, authToken());
+};
 
 function Header() {
   const currentlyUser = useContext(userContext);
   const userRole = currentlyUser?.user?.Role?.role;
 
   const [toggle, setToggle] = useState(window.innerWidth <= 1024);
-  // const [notifications, setNotifications] = useState(0);
+  const [notifications, setNotifications] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [inviteMessage, setInviteMessage] = useState('');
 
   useEffect(() => {
-    // if (userRole !== Roles.PACIENT) {
-    //   fetchNotifications().then(res => {
-    //     setNotifications(res.data);
-    //   });
-    // }
-  }, [userRole]);
+    if (userRole !== Roles.PACIENT) {
+      fetchNotifications().then(res => {
+        setNotifications(res.data);
+      });
 
-  // if (userRole !== Roles.PACIENT) {
-  //   setTimeout(() => {
-  //     fetchNotifications().then(res => {
-  //       setNotifications(res.data);
-  //     });
-  //   }, 10000);
-  // }
+      setInviteMessage(`${currentlyUser?.user?.name} está convidando você para fazer parte do sistema Salutii como paciente!
+
+Faça seu cadastro no link abaixo para começar utilizar e acompanhar seus agendamentos!
+
+http://salutii.app.br`);
+    }
+  }, [currentlyUser, userRole]);
+
+  const copyMessage = () => {
+    copy(inviteMessage);
+    toast.success('Convite copiado com sucesso!');
+  };
 
   return (
     <>
@@ -255,11 +272,11 @@ function Header() {
             >
               <div>
                 <MdNotificationsNone size={32} />
-                {/* {notifications.count > 0 && (
+                {notifications.count > 0 && (
                   <Badge pill variant="danger">
                     {notifications.count}
                   </Badge>
-                )} */}
+                )}
               </div>
             </NotificationDropdown>
           )}
@@ -284,6 +301,18 @@ function Header() {
               >
                 Meu perfil
               </NavLink>
+
+              {userRole !== Roles.PATIENT && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  className="dropdown-item"
+                  onClick={() => setShowModal(true)}
+                  onKeyPress={() => setShowModal(true)}
+                >
+                  Convidar para o sistema
+                </span>
+              )}
 
               <Dropdown.Divider />
 
@@ -374,7 +403,59 @@ function Header() {
               </NavLink>
             </li>
           </ul>
+
+          {userRole === Roles.ADMIN && (
+            <>
+              <span className="aside-link-separator">Financeiro</span>
+              <ul>
+                <li>
+                  <NavLink to="/relatorios" activeClassName="active">
+                    <FaNotesMedical size={24} />
+                    <span className="aside-page-name">Relatórios</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/despesas" activeClassName="active">
+                    <FaRegMoneyBillAlt size={24} />
+                    <span className="aside-page-name">Despesas</span>
+                  </NavLink>
+                </li>
+              </ul>
+            </>
+          )}
         </div>
+
+        <Modal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Convidar para o sistema </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group controlId="exampleForm.ControlTextarea1">
+              <LabelStyled>Convite</LabelStyled>
+              <Form.Control
+                as="textarea"
+                readOnly
+                disabled
+                rows="8"
+                id="js-invite-text"
+                defaultValue={inviteMessage}
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="default" onClick={() => setShowModal(false)}>
+              Fechar
+            </Button>
+            <Button variant="primary" onClick={copyMessage}>
+              Copiar mensagem
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </StyledAside>
     </>
   );
