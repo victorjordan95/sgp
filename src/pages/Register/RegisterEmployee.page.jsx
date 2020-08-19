@@ -33,14 +33,6 @@ const siteMap = [
   { path: '', name: 'Cadastrar funcionário' },
 ];
 
-const fillEstablishments = list => {
-  const establishmentsList = [];
-  list.forEach(estab => {
-    establishmentsList.push({ label: estab.name, value: estab.id });
-  });
-  return establishmentsList;
-};
-
 function RegisterEmployee() {
   const currentlyUser = useContext(userContext);
   const userRole = currentlyUser?.user?.Role?.role;
@@ -89,7 +81,7 @@ function RegisterEmployee() {
       cpf: removeSpecial(formValues.cpf),
       rg: removeSpecial(formValues.rg),
       state: formValues?.state[0].value,
-      role: [3],
+      role: formValues?.role?.map(el => el.value),
       geometry: locale?.location?.coordinates,
       establishments: [formValues?.establishment?.value],
       country: 'BR',
@@ -99,7 +91,7 @@ function RegisterEmployee() {
       toast.success('Perfil salvo com sucesso!');
       setLoading(false);
       setFormValues({});
-      history.push(`/funcionario`);
+      history.push(`/funcionarios`);
     } catch (err) {
       toast.error(err?.response?.data?.error);
       setLoading(false);
@@ -107,10 +99,7 @@ function RegisterEmployee() {
   };
 
   useEffect(() => {
-    const estabs =
-      currentlyUser?.user?.establishments &&
-      fillEstablishments(currentlyUser?.user?.establishments);
-    setEstablishments(estabs);
+    setEstablishments(currentlyUser?.user?.establishments);
   }, [currentlyUser]);
 
   return loading ? (
@@ -373,7 +362,7 @@ function RegisterEmployee() {
                       />
                     </Form.Group>
                   </Form.Row>
-                  {userRole === Roles.DOCTOR && (
+                  {formValues?.role.id === Roles.DOCTOR && (
                     <>
                       <h3 className="mt-4">Informações médicas</h3>
                       <hr />

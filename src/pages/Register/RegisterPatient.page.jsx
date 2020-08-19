@@ -26,14 +26,6 @@ const siteMap = [
   { path: '', name: 'Cadastrar paciente' },
 ];
 
-const fillEstablishments = list => {
-  const establishmentsList = [];
-  list.forEach(estab => {
-    establishmentsList.push({ label: estab.name, value: estab.id });
-  });
-  return establishmentsList;
-};
-
 function RegisterEmployee() {
   const currentlyUser = useContext(userContext);
 
@@ -98,10 +90,7 @@ function RegisterEmployee() {
   };
 
   useEffect(() => {
-    const estabs =
-      currentlyUser?.user?.establishments &&
-      fillEstablishments(currentlyUser?.user?.establishments);
-    setEstablishments(estabs);
+    setEstablishments(currentlyUser?.user?.establishments);
   }, [currentlyUser]);
 
   return loading ? (

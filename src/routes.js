@@ -12,6 +12,7 @@ import EmployeeProfile from './pages/EmployeeProfile/EmployeeProfile.page';
 import Establishment from './pages/Establishment/Establishment.page';
 import EditEstablishment from './pages/Establishment/EditEstablishment.page';
 import EstablishmentList from './pages/Establishment/EstablishmentList.page';
+import Expenses from './pages/Expenses/Expenses.page';
 import Login from './pages/Login/Login.page';
 import Profile from './pages/Profile/Profile.page';
 import Patients from './pages/Patients/Patients.page';
@@ -36,6 +37,7 @@ export default function Routes() {
         />
         <Route path="/cid" component={Cid} />
         <Route path="/dashboard" component={Dashboard} />
+        <Route path="/despesas" component={Expenses} />
         <Route path="/estabelecimentos" component={EstablishmentList} />
         <Route path="/estabelecimento/:id" component={EditEstablishment} />
         <Route path="/funcionarios" component={Employees} />

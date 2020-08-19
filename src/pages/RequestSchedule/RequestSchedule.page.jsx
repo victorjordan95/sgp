@@ -37,11 +37,46 @@ const fetchSchedules = async (page = 1, name = '') => {
   }
   return false;
 };
-
 const RequestSchedule = () => {
   const [requests, setRequests] = useState();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState({ option: 'name' });
+
+  useEffect(() => {
+    setLoading(true);
+    fetchSchedules().then(res => {
+      setRequests(res);
+      setLoading(false);
+    });
+  }, []);
+
+  const handlePageChange = e => {
+    setLoading(true);
+    fetchSchedules(e).then(res => {
+      setRequests(res, search?.searchValue);
+      setLoading(false);
+    });
+  };
+
+  const searchRequests = () => {
+    setLoading(true);
+    fetchSchedules(1, search?.searchValue).then(res => {
+      setRequests(res);
+      setLoading(false);
+    });
+  };
+
+  const handleRequest = async status => {
+    setLoading(true);
+    try {
+      await api.put(`/schedule`, status, authToken());
+      searchRequests();
+      toast.success(status.message);
+    } catch (err) {
+      toast.error(err?.response?.data?.error);
+    }
+    setLoading(false);
+  };
 
   const columns = [
     {
@@ -117,42 +152,6 @@ const RequestSchedule = () => {
       ),
     },
   ];
-
-  useEffect(() => {
-    setLoading(true);
-    fetchSchedules().then(res => {
-      setRequests(res);
-      setLoading(false);
-    });
-  }, []);
-
-  const handlePageChange = e => {
-    setLoading(true);
-    fetchSchedules(e).then(res => {
-      setRequests(res, search?.searchValue);
-      setLoading(false);
-    });
-  };
-
-  const searchRequests = () => {
-    setLoading(true);
-    fetchSchedules(1, search?.searchValue).then(res => {
-      setRequests(res);
-      setLoading(false);
-    });
-  };
-
-  const handleRequest = async status => {
-    setLoading(true);
-    try {
-      await api.put(`/schedule-requests`, status, authToken());
-      searchRequests();
-      toast.success(status.message);
-    } catch (err) {
-      toast.error(err?.response?.data?.error);
-    }
-    setLoading(false);
-  };
 
   return loading ? (
     <Loader />

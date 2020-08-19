@@ -37,7 +37,7 @@ const fetchUsers = async (page = 1) => {
   return false;
 };
 
-const fetchCids = async (page = 1, type = '', name = '') => {
+const fetchEmployees = async (page = 1, type = '', name = '') => {
   let findUrl = '';
   if (name) {
     findUrl = `?page=${page}&type=${type}&name=${name}`;
@@ -153,9 +153,9 @@ const Employees = () => {
     });
   };
 
-  const searchCid = () => {
+  const searchEmployees = () => {
     setLoading(true);
-    fetchCids(1, search?.option, search?.searchValue).then(res => {
+    fetchEmployees(1, search?.option, search?.searchValue).then(res => {
       setUsers(res);
       setLoading(false);
     });
@@ -185,7 +185,7 @@ const Employees = () => {
                       search={search}
                       setSearch={setSearch}
                       selectOptions={selectOptions}
-                      searchFunc={searchCid}
+                      searchFunc={searchEmployees}
                     />
                     <Link
                       to="/cadastro-funcionario"

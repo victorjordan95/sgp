@@ -574,12 +574,12 @@ function Profile() {
                             onChange={e =>
                               setFormValues({
                                 ...formValues,
-                                appointment_time: e,
+                                time_appointment: e,
                               })
                             }
                             value={
-                              formValues?.appointment_time ||
-                              currentlyUser?.user?.appointment_time
+                              formValues?.time_appointment ||
+                              currentlyUser?.user?.time_appointment
                             }
                           />
                         </Form.Group>

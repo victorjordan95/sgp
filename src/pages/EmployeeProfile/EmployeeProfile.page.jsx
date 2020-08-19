@@ -43,6 +43,7 @@ function EmployeeProfile(props) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async e => {
+    debugger;
     setLoading(true);
     e.preventDefault();
     const user = {
@@ -56,6 +57,7 @@ function EmployeeProfile(props) {
       rg: removeSpecial(formValues.rg),
       street: formValues.street,
       number: formValues.number,
+      role: [formValues?.role?.id],
       complement: formValues.complement,
       city: formValues.city,
       state: formValues?.state?.value

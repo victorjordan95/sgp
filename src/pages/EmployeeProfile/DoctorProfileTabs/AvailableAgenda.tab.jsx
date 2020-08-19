@@ -18,7 +18,7 @@ moment.locale('pt-br');
 function AvailableAgenda({ doctorId, doctorInfo }) {
   const currentlyUser = useContext(userContext);
 
-  const [schedules, setSchedules] = useState();
+  const [schedules, setSchedules] = useState([]);
   const [show, setShow] = useState(false);
   const [clickedEvent, setClickedEvent] = useState();
 
@@ -95,23 +95,18 @@ function AvailableAgenda({ doctorId, doctorInfo }) {
 
   return (
     <>
-      {schedules ? (
-        <StyledCalendar
-          localizer={localizer}
-          events={schedules}
-          views={['day']}
-          startAccessor="start"
-          onSelectEvent={e => handleClickEvent(e)}
-          endAccessor="end"
-          style={{ height: 'calc(100vh' }}
-          messages={messages[0]}
-          defaultView={window.innerWidth > 768 ? 'day' : 'list'}
-          onNavigate={(date, view) => handleChangeMonth(date, view)}
-        />
-      ) : (
-        <p>Loading</p>
-      )}
-      ;
+      <StyledCalendar
+        localizer={localizer}
+        events={schedules}
+        views={['day']}
+        startAccessor="start"
+        onSelectEvent={e => handleClickEvent(e)}
+        endAccessor="end"
+        style={{ height: 'calc(100vh' }}
+        messages={messages[0]}
+        defaultView={window.innerWidth > 768 ? 'day' : 'list'}
+        onNavigate={(date, view) => handleChangeMonth(date, view)}
+      />
       <Modal
         show={show}
         onHide={() => setShow(false)}
