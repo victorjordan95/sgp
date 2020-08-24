@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import withAutoplay from 'react-awesome-slider/dist/autoplay';
 import LabelStyled from '../../styles/LabelForm';
 import { validateEmail } from '../../utils/formValidator';
+import Roles from '../../enums/Roles.enum';
 
 import userContext from '../../store/UserContext';
 
@@ -227,7 +228,6 @@ function Login(props) {
     try {
       const loggedUser = await api.post('/session', formValues);
       localStorage.setItem('sgp-token', loggedUser.data.token);
-      props.history.push('/dashboard');
 
       const userData = await api.get(
         `/users/${loggedUser.data.user.id}`,
@@ -237,6 +237,13 @@ function Login(props) {
         'userEstabs',
         userData?.data?.establishments?.map(estab => estab.id)
       );
+
+      if (userData.data.Role.role === Roles.PATIENT) {
+        props.history.push('/minhas-consultas');
+      } else {
+        props.history.push('/dashboard');
+      }
+
       currentlyUser.handleUserContext(userData.data);
     } catch (err) {
       toast.error(err?.response?.data?.error);
@@ -296,7 +303,7 @@ function Login(props) {
         </AutoplaySlider>
       </StyledAutoPlay>
       <LoginFormStyled className="login">
-        <h1 className="title">Saluti</h1>
+        <h1 className="title">Salutii</h1>
 
         <Form onSubmit={handleSubmit} noValidate>
           <Form.Group as={Col} className="p-0">

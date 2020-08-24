@@ -11,7 +11,7 @@ import userContext from './store/UserContext';
 
 import GlobalStyle from './styles/global';
 
-function App() {
+function App(props) {
   const [loggedUser, setLoggedUser] = useState({});
   const [contextValue, setContextValue] = useState({});
 
@@ -49,10 +49,11 @@ function App() {
         })();
       } catch (err) {
         console.log(err);
+        props.history.push('/');
         // toast.error(err?.response?.data?.error);
       }
     }
-  }, []);
+  }, [props.history]);
 
   return (
     <userContext.Provider value={contextValue}>

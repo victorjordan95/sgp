@@ -236,7 +236,7 @@ function Header() {
   const [inviteMessage, setInviteMessage] = useState('');
 
   useEffect(() => {
-    if (userRole !== Roles.PACIENT) {
+    if (userRole !== Roles.PATIENT) {
       fetchNotifications().then(res => {
         setNotifications(res.data);
       });
@@ -261,7 +261,7 @@ http://salutii.app.br`);
           <button type="button" onClick={() => setToggle(!toggle)}>
             <MdMenu size={24} />
           </button>
-          <h3>Saluti</h3>
+          <h3>Salutii</h3>
         </div>
         <div className="nav-actions">
           {(userRole === Roles.EMPLOYEE || userRole === Roles.ADMIN) && (
@@ -332,19 +332,21 @@ http://salutii.app.br`);
       <StyledAside className={`${toggle ? 'toggled' : ''}`}>
         <div className="aside-content">
           <ul>
-            <li>
-              <NavLink to="/dashboard" activeClassName="active">
-                <FiPieChart size={24} />
-                <span className="aside-page-name">Dashboard</span>
-              </NavLink>
-            </li>
             {userRole !== Roles.PATIENT && (
-              <li>
-                <NavLink to="/agenda" activeClassName="active">
-                  <FiCalendar size={24} />
-                  <span className="aside-page-name">Agenda médica</span>
-                </NavLink>
-              </li>
+              <>
+                <li>
+                  <NavLink to="/dashboard" activeClassName="active">
+                    <FiPieChart size={24} />
+                    <span className="aside-page-name">Dashboard</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/agenda" activeClassName="active">
+                    <FiCalendar size={24} />
+                    <span className="aside-page-name">Agenda médica</span>
+                  </NavLink>
+                </li>
+              </>
             )}
             <li>
               <NavLink to="/cid" activeClassName="active">
@@ -366,7 +368,7 @@ http://salutii.app.br`);
 
           <span className="aside-link-separator">Consultar</span>
           <ul>
-            {!(userRole === Roles.PACIENT) && (
+            {!(userRole === Roles.PATIENT) && (
               <li>
                 <NavLink to="/pacientes" activeClassName="active">
                   <FiUser size={24} />
