@@ -362,7 +362,7 @@ function RegisterEmployee() {
                       />
                     </Form.Group>
                   </Form.Row>
-                  {formValues?.role.id === Roles.DOCTOR && (
+                  {formValues?.role?.id === Roles.DOCTOR && (
                     <>
                       <h3 className="mt-4">Informações médicas</h3>
                       <hr />
