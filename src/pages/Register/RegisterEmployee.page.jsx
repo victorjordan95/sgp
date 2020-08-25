@@ -81,7 +81,7 @@ function RegisterEmployee() {
       cpf: removeSpecial(formValues.cpf),
       rg: removeSpecial(formValues.rg),
       state: formValues?.state[0].value,
-      role: formValues?.role?.map(el => el.value),
+      role: formValues?.role?.id,
       geometry: locale?.location?.coordinates,
       establishments: [formValues?.establishment?.value],
       country: 'BR',

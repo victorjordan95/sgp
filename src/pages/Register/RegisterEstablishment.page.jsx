@@ -81,7 +81,7 @@ function RegisterEstablishment() {
         establishment,
         authToken()
       );
-      await api.put(
+      const updated = await api.put(
         `/users/${currentlyUser?.user?.id}`,
         {
           establishments: [
@@ -95,6 +95,10 @@ function RegisterEstablishment() {
       setLoading(false);
       setFormValues({});
       history.push(`/estabelecimentos`);
+      currentlyUser.handleUserContext({
+        ...currentlyUser.user,
+        ...updated.data,
+      });
     } catch (err) {
       toast.error(err?.response?.data?.error);
       setLoading(false);

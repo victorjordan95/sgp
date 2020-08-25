@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Badge, Modal, Button, Form } from 'react-bootstrap';
 import { MdMenu, MdNotificationsNone } from 'react-icons/md';
@@ -233,19 +233,23 @@ function Header() {
   const [toggle, setToggle] = useState(window.innerWidth <= 1024);
   const [notifications, setNotifications] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [inviteMessage, setInviteMessage] = useState('');
 
-  useEffect(() => {
-    if (userRole !== Roles.PATIENT) {
-      fetchNotifications().then(res => {
-        setNotifications(res.data);
-      });
-
-      setInviteMessage(`${currentlyUser?.user?.name} está convidando você para fazer parte do sistema Salutii como paciente!
+  const inviteMessage = useMemo(
+    () => [
+      `${currentlyUser?.user?.name} está convidando você para fazer parte do sistema Salutii como paciente!
 
 Faça seu cadastro no link abaixo para começar utilizar e acompanhar seus agendamentos!
 
-http://salutii.app.br`);
+http://salutii.app.br`,
+    ],
+    [currentlyUser]
+  );
+
+  useEffect(() => {
+    if (userRole !== Roles.PATIENT) {
+      // fetchNotifications().then(res => {
+      //   setNotifications(res.data);
+      // });
     }
   }, [currentlyUser, userRole]);
 
@@ -272,11 +276,9 @@ http://salutii.app.br`);
             >
               <div>
                 <MdNotificationsNone size={32} />
-                {notifications.count > 0 && (
-                  <Badge pill variant="danger">
-                    {notifications.count}
-                  </Badge>
-                )}
+                <Badge pill variant="danger">
+                  +
+                </Badge>
               </div>
             </NotificationDropdown>
           )}

@@ -78,7 +78,7 @@ const Employees = () => {
     },
     {
       name: 'Tipo Funcionário',
-      selector: 'Role.role',
+      selector: 'rolename',
       sortable: true,
     },
     {
@@ -92,10 +92,9 @@ const Employees = () => {
       sortable: true,
     },
     {
-      name: 'Cidade',
-      selector: 'address_pk.city',
+      name: 'Estabelecimento',
+      selector: 'estabname',
       sortable: true,
-      right: true,
     },
     {
       name: 'Ações',
@@ -141,6 +140,7 @@ const Employees = () => {
   useEffect(() => {
     setLoading(true);
     fetchUsers().then(res => {
+      console.log(res);
       setUsers(res);
       setLoading(false);
     });
@@ -174,29 +174,31 @@ const Employees = () => {
               <PageTitle headerTitle="Funcionários" />
             </Col>
             <Col xs={12}>
-              <UsersTable
-                data={users}
-                columns={columns}
-                handlePageChange={handlePageChange}
-                subHeader
-                subHeaderComponent={
-                  <div className="d-flex flex-row justify-content-between w-100">
-                    <SearchHeaderTable
-                      search={search}
-                      setSearch={setSearch}
-                      selectOptions={selectOptions}
-                      searchFunc={searchEmployees}
-                    />
-                    <Link
-                      to="/cadastro-funcionario"
-                      className="btn btn-primary btn-add"
-                    >
-                      <FiPlus size={20} className="mr-2" />
-                      <span>Cadastrar</span>
-                    </Link>
-                  </div>
-                }
-              />
+              {users && (
+                <UsersTable
+                  data={users}
+                  columns={columns}
+                  handlePageChange={handlePageChange}
+                  subHeader
+                  subHeaderComponent={
+                    <div className="d-flex flex-row justify-content-between w-100">
+                      <SearchHeaderTable
+                        search={search}
+                        setSearch={setSearch}
+                        selectOptions={selectOptions}
+                        searchFunc={searchEmployees}
+                      />
+                      <Link
+                        to="/cadastro-funcionario"
+                        className="btn btn-primary btn-add"
+                      >
+                        <FiPlus size={20} className="mr-2" />
+                        <span>Cadastrar</span>
+                      </Link>
+                    </div>
+                  }
+                />
+              )}
             </Col>
           </Row>
         </Container>
