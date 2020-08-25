@@ -75,6 +75,7 @@ function RegisterEmployee() {
 
     const user = {
       ...formValues,
+      zipcode: formValues?.zip,
       phone: removeSpecial(formValues.phone),
       cellphone: removeSpecial(formValues.cellphone),
       password: DEFAULT_PASSWORD,
