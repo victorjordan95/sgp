@@ -37,6 +37,7 @@ export default createGlobalStyle`
         right: 24px;
         text-align: center;
         width: 50px;
+        z-index: 999;
         svg {
           margin-right: 0!important;
         }
