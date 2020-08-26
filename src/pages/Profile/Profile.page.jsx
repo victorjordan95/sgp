@@ -260,7 +260,7 @@ function Profile() {
                         name="phone"
                         value={
                           formValues?.phone ||
-                          (currentlyUser?.user?.Contact?.phone).toString() ||
+                          currentlyUser?.user?.Contact?.phone ||
                           ''
                         }
                         onChange={e =>
@@ -344,7 +344,7 @@ function Profile() {
                         required
                         value={
                           formValues?.zipcode ||
-                          currentlyUser?.user?.address_pk?.zipcode
+                          (currentlyUser?.user?.address_pk?.zipcode).toString()
                         }
                         onChange={e =>
                           setFormValues({
