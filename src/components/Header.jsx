@@ -243,14 +243,14 @@ function Header() {
 
 Faça seu cadastro no link abaixo para começar utilizar e acompanhar seus agendamentos!
 
-http://salutii.app.br?estabId=${selectedEstablishment.value}`,
+http://salutii.app.br?estabId=${selectedEstablishment?.value}`,
     ],
     [currentlyUser, selectedEstablishment]
   );
 
   useEffect(() => {
     setEstablishments(currentlyUser?.user?.establishments);
-    setSelectedEstablishment(currentlyUser?.user?.establishments[0]);
+    setSelectedEstablishment(currentlyUser?.user?.establishments?.[0]);
     if (userRole !== Roles.PATIENT) {
       // fetchNotifications().then(res => {
       //   setNotifications(res.data);

@@ -9,6 +9,7 @@ import userContext from '../../store/UserContext';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 import { removeSpecial } from '../../utils/removeSpecialCharacters';
+import Roles from '../../enums/Roles.enum';
 
 import AvatarPicture from '../../components/AvatarPicture';
 import Breadcrumb from '../../components/Breadcrumb';
@@ -41,9 +42,9 @@ function EmployeeProfile(props) {
 
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
+  const [establishments, setEstablishments] = useState([]);
 
   const handleSubmit = async e => {
-    debugger;
     setLoading(true);
     e.preventDefault();
     const user = {
@@ -76,10 +77,11 @@ function EmployeeProfile(props) {
 
   useEffect(() => {
     const { id } = props.match.params;
+    setEstablishments(currentlyUser?.user?.establishments);
     fetchUser(id).then(res => {
       setFormValues(res);
     });
-  }, [props.match.params]);
+  }, [currentlyUser, props.match.params]);
 
   return loading ? (
     <Loader />
@@ -311,7 +313,21 @@ function EmployeeProfile(props) {
                   </Form.Row>
 
                   <Form.Row>
-                    <Form.Group as={Col}>
+                    <Form.Group as={Col} xs={12} md={6}>
+                      <LabelStyled>Estabelecimento</LabelStyled>
+                      <Select
+                        options={establishments}
+                        value={formValues?.establishments}
+                        isMulti
+                        isDisabled={currentlyUser?.Role?.role !== Roles.ADMIN}
+                        onChange={e =>
+                          setFormValues({ ...formValues, establishment: e })
+                        }
+                        placeholder="Selecione o estabelecimento"
+                      />
+                    </Form.Group>
+
+                    <Form.Group as={Col} xs={12} md={6}>
                       <LabelStyled>Tipo de usuário</LabelStyled>
                       <Select
                         options={rolesValues}
