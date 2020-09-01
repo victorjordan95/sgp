@@ -319,7 +319,7 @@ function Agenda() {
             o paciente <strong>{selectedPatient?.label}</strong>?
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShow(false)}>
+            <Button variant="light" onClick={() => setShow(false)}>
               Cancelar
             </Button>
             <Button variant="primary" onClick={handleSubmit}>
@@ -372,7 +372,7 @@ function Agenda() {
               Cancelar
             </Button>
             <Button
-              variant="secondary"
+              variant="light"
               onClick={() =>
                 handleRequest(
                   AppointmentStatus.CANCELADO,

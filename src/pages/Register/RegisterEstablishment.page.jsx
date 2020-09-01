@@ -252,7 +252,8 @@ function RegisterEstablishment() {
                       <LabelStyled>Complemento</LabelStyled>
                       <Form.Control
                         type="text"
-                        placeholder="Digite o complemento" maxlength="80"
+                        placeholder="Digite o complemento"
+                        maxLength="80"
                         name="complement"
                         value={formValues?.complement || ''}
                         onChange={e =>

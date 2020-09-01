@@ -405,7 +405,7 @@ function Profile() {
                       <Form.Control
                         type="text"
                         placeholder="Digite o complemento"
-                        maxlength="80"
+                        maxLength="80"
                         name="complement"
                         value={
                           formValues?.complement ||
@@ -489,7 +489,10 @@ function Profile() {
                           <StyledSelect
                             options={medicineCategoriesValues}
                             isMulti
-                            value={formValues?.categories}
+                            value={
+                              currentlyUser?.user?.doctor_info?.categories ||
+                              formValues?.categories
+                            }
                             onChange={e =>
                               setFormValues({ ...formValues, categories: e })
                             }
@@ -505,7 +508,8 @@ function Profile() {
                             options={professionalCoucil}
                             value={
                               formValues?.professional_coucil ||
-                              currentlyUser?.user?.professional_coucil
+                              currentlyUser?.user?.doctor_info
+                                ?.ProfessionalCoucil
                             }
                             onChange={e =>
                               setFormValues({
@@ -526,7 +530,7 @@ function Profile() {
                             name="coucil_number"
                             value={
                               formValues?.coucil_number ||
-                              currentlyUser?.user?.coucil_number
+                              currentlyUser?.user?.doctor_info?.coucil_number
                             }
                             onChange={e =>
                               setFormValues({
@@ -549,7 +553,7 @@ function Profile() {
                             }
                             value={
                               formValues?.start_hour ||
-                              currentlyUser?.user?.start_hour
+                              currentlyUser?.user?.doctor_info?.start_hour
                             }
                           />
                         </Form.Group>
@@ -563,7 +567,7 @@ function Profile() {
                             }
                             value={
                               formValues?.end_hour ||
-                              currentlyUser?.user?.end_hour
+                              currentlyUser?.user?.doctor_info?.end_hour
                             }
                           />
                         </Form.Group>
@@ -581,7 +585,7 @@ function Profile() {
                             }
                             value={
                               formValues?.time_appointment ||
-                              currentlyUser?.user?.time_appointment
+                              currentlyUser?.user?.doctor_info?.time_appointment
                             }
                           />
                         </Form.Group>

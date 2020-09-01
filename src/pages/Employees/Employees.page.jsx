@@ -4,7 +4,7 @@ import { Container, Row, Col, Tooltip } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
-import { FiTrash2, FiEdit3, FiPlus } from 'react-icons/fi';
+import { FiEdit3, FiPlus } from 'react-icons/fi';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 
@@ -46,7 +46,7 @@ const fetchEmployees = async (page = 1, type = '', name = '') => {
   }
 
   try {
-    const result = await api.get(`/users${findUrl}`, authToken());
+    const result = await api.get(`/employees${findUrl}`, authToken());
     return result.data;
   } catch (err) {
     toast.error(err?.response?.data?.error);
@@ -116,22 +116,6 @@ const Employees = () => {
               <FiEdit3 size={24} />
             </button>
           </OverlayTrigger>
-
-          <OverlayTrigger
-            key={`refuse-${row.id}`}
-            placement="top"
-            overlay={
-              <Tooltip id={`refuse-${row.id}`}>Excluir funcionário</Tooltip>
-            }
-          >
-            <button
-              type="button"
-              className="btn btn-light"
-              onClick={() => handleRequest(row)}
-            >
-              <FiTrash2 size={24} />
-            </button>
-          </OverlayTrigger>
         </div>
       ),
     },
@@ -140,7 +124,6 @@ const Employees = () => {
   useEffect(() => {
     setLoading(true);
     fetchUsers().then(res => {
-      console.log(res);
       setUsers(res);
       setLoading(false);
     });

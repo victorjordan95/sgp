@@ -43,6 +43,7 @@ function EmployeeProfile(props) {
   const [formValues, setFormValues] = useState({});
   const [loading, setLoading] = useState(false);
   const [establishments, setEstablishments] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleSubmit = async e => {
     setLoading(true);
@@ -58,7 +59,9 @@ function EmployeeProfile(props) {
       rg: removeSpecial(formValues.rg),
       street: formValues.street,
       number: formValues.number,
-      role: [formValues?.role?.id],
+      role: [
+        formValues?.role?.id ? formValues?.role?.id : formValues?.Role?.id,
+      ],
       complement: formValues.complement,
       city: formValues.city,
       state: formValues?.state?.value
@@ -77,6 +80,7 @@ function EmployeeProfile(props) {
 
   useEffect(() => {
     const { id } = props.match.params;
+    setIsAdmin(currentlyUser?.user?.Role?.role === 'ADMIN');
     setEstablishments(currentlyUser?.user?.establishments);
     fetchUser(id).then(res => {
       setFormValues(res);
@@ -260,7 +264,7 @@ function EmployeeProfile(props) {
                       <Form.Control
                         type="text"
                         placeholder="Digite o complemento"
-                        maxlength="80"
+                        maxLength="80"
                         name="complement"
                         value={
                           formValues?.complement ||
@@ -319,7 +323,7 @@ function EmployeeProfile(props) {
                         options={establishments}
                         value={formValues?.establishments}
                         isMulti
-                        isDisabled={currentlyUser?.Role?.role !== Roles.ADMIN}
+                        isDisabled={!isAdmin}
                         onChange={e =>
                           setFormValues({ ...formValues, establishment: e })
                         }

@@ -233,9 +233,14 @@ function Login(props) {
         `/users/${loggedUser.data.user.id}`,
         authToken()
       );
+      const estabs = await api.get(
+        `establishment?userId=${loggedUser.data.user.id}`,
+        authToken()
+      );
+
       localStorage.setItem(
         'userEstabs',
-        userData?.data?.establishments?.map(estab => estab.id)
+        estabs?.data?.rows?.map(estab => estab.id) || []
       );
 
       if (userData.data.Role.role === Roles.PATIENT) {
@@ -244,7 +249,10 @@ function Login(props) {
         props.history.push('/dashboard');
       }
 
-      currentlyUser.handleUserContext(userData.data);
+      currentlyUser.handleUserContext({
+        ...userData.data,
+        establishments: [...estabs.data.rows],
+      });
     } catch (err) {
       toast.error(err?.response?.data?.error);
     }

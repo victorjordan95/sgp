@@ -181,12 +181,10 @@ function Dashboard() {
   }, [currentlyUser]);
 
   const onPieEnterMonth = (data, index) => {
-    console.log(data);
     setIndex(index);
   };
 
   const onPieEnterDay = (data, index) => {
-    console.log(data);
     setIndexDay(index);
   };
 

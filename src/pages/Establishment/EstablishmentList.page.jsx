@@ -10,6 +10,7 @@ import authToken from '../../utils/authToken';
 import userContext from '../../store/UserContext';
 
 import Breadcrumb from '../../components/Breadcrumb';
+import ExcludeModal from '../../components/ExcludeModal';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
 import PageTitle from '../../components/PageTitle';
@@ -20,7 +21,7 @@ const siteMap = [
   { path: 'estabelecimentos', name: 'Meus estabelecimentos' },
 ];
 
-const fetchUsers = async id => {
+const fetchEstabs = async id => {
   try {
     const result = await api.get(`establishment?userId=${id}`, authToken());
     return result.data;
@@ -35,28 +36,34 @@ const EstablishmentList = () => {
   const currentlyUser = useContext(userContext);
   const [establishments, setEstablishments] = useState();
   const [loading, setLoading] = useState(true);
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedDelete, setSelectedDelete] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     if (currentlyUser?.user?.id) {
-      fetchUsers(currentlyUser.user.id).then(res => {
+      fetchEstabs(currentlyUser.user.id).then(res => {
         setEstablishments(res);
         setLoading(false);
       });
     }
   }, [currentlyUser]);
 
-  const editEstab = estab => {
-    history.push(`/estabelecimento/${estab.id}`);
+  const onClose = () => {
+    setShowDelete(false);
+    fetchEstabs(currentlyUser.user.id).then(res => {
+      setEstablishments(res);
+      setLoading(false);
+    });
   };
 
-  const handleRequest = async estab => {
-    try {
-      await api.delete(`/establishment/${estab.id}`, authToken());
-      toast.success('Estabelecimento removido com sucesso!');
-    } catch (err) {
-      toast.error(err?.response?.data?.error);
-    }
+  const handleDelete = expense => {
+    setSelectedDelete(expense?.id);
+    setShowDelete(true);
+  };
+
+  const editEstab = estab => {
+    history.push(`/estabelecimento/${estab.id}`);
   };
 
   const columns = [
@@ -66,10 +73,15 @@ const EstablishmentList = () => {
       sortable: true,
     },
     {
+      name: 'Status',
+      cell: row => `${row.status ? 'Ativo' : 'Desativo'}`,
+    },
+    {
       name: 'Cidade',
       selector: 'address_pk.city',
       sortable: true,
     },
+
     {
       name: 'Ações',
       button: true,
@@ -101,7 +113,7 @@ const EstablishmentList = () => {
             <button
               type="button"
               className="btn btn-light"
-              onClick={() => handleRequest(row)}
+              onClick={() => handleDelete(row)}
             >
               <FiTrash2 size={24} />
             </button>
@@ -112,7 +124,7 @@ const EstablishmentList = () => {
   ];
 
   const handlePageChange = e => {
-    fetchUsers(e).then(res => {
+    fetchEstabs(e).then(res => {
       setEstablishments(res);
       setLoading(false);
     });
@@ -151,6 +163,13 @@ const EstablishmentList = () => {
             </Col>
           </Row>
         </Container>
+        <ExcludeModal
+          show={showDelete}
+          setShow={setShowDelete}
+          route="establishment"
+          id={selectedDelete}
+          onClose={onClose}
+        />
       </main>
     </div>
   );

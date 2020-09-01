@@ -19,8 +19,10 @@ import { FiTrash2, FiEdit3, FiPlus } from 'react-icons/fi';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 import userContext from '../../store/UserContext';
+import removeAccent from '../../utils/removeAccent';
 
 import Breadcrumb from '../../components/Breadcrumb';
+import ExcludeModal from '../../components/ExcludeModal';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
 import PageTitle from '../../components/PageTitle';
@@ -45,10 +47,12 @@ const siteMap = [
 
 const selectOptions = [{ value: 'name', label: 'Nome' }];
 
-const fetchExpenses = async (page = 1, estab, type = '', name = '') => {
+const fetchExpenses = async (page = 1, estab = '', name = '', type = '') => {
   let findUrl = '';
   if (name) {
-    findUrl = `?page=${page}&estab=${estab}&type=${type}&name=${name}`;
+    findUrl = `?page=${page}&estab=${estab}&type=${removeAccent(
+      type
+    )}&columnName=${name}`;
   } else {
     findUrl = `?page=${page}&estab=${estab}`;
   }
@@ -66,9 +70,11 @@ const Expenses = () => {
   const [search, setSearch] = useState({ option: 'name' });
   const currentlyUser = useContext(userContext);
 
-  const [expenses, setExpenses] = useState();
+  const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedDelete, setSelectedDelete] = useState(false);
   const [formValues, setFormValues] = useState({});
   const [establishments, setEstablishments] = useState([]);
   const [selectedEstablishment, setSelectedEstablishment] = useState([]);
@@ -76,6 +82,11 @@ const Expenses = () => {
   const handleExpense = expense => {
     setFormValues(expense);
     setShow(true);
+  };
+
+  const handleDelete = expense => {
+    setSelectedDelete(expense?.id);
+    setShowDelete(true);
   };
 
   const columns = [
@@ -91,7 +102,7 @@ const Expenses = () => {
       sortable: true,
     },
     {
-      name: 'Data',
+      name: 'Data de criação',
       selector: 'createdAt',
       cell: row => (
         <span>{moment(new Date(row.createdAt)).format('DD/MM/YYYY')}</span>
@@ -125,7 +136,7 @@ const Expenses = () => {
             <button
               type="button"
               className="btn btn-light"
-              onClick={() => handleExpense(row)}
+              onClick={() => handleDelete(row)}
             >
               <FiTrash2 size={24} />
             </button>
@@ -144,6 +155,8 @@ const Expenses = () => {
         setExpenses(res);
         setLoading(false);
       });
+    } else {
+      setLoading(false);
     }
   }, [currentlyUser]);
 
@@ -175,6 +188,14 @@ const Expenses = () => {
     });
   };
 
+  const onClose = () => {
+    setShowDelete(false);
+    fetchExpenses(1, currentlyUser?.user?.establishments?.[0]?.id).then(res => {
+      setExpenses(res);
+      setLoading(false);
+    });
+  };
+
   const handleSubmit = async () => {
     if (formValues?.id) {
       try {
@@ -183,6 +204,12 @@ const Expenses = () => {
         fetchExpenses(1, selectedEstablishment.id).then(res => {
           setExpenses(res);
           setLoading(false);
+          fetchExpenses(1, currentlyUser.user.establishments[0].id).then(
+            newRes => {
+              setExpenses(newRes);
+              setLoading(false);
+            }
+          );
         });
         toast.success('Despesa atualizada!');
         setShow(false);
@@ -196,6 +223,12 @@ const Expenses = () => {
         fetchExpenses(1, selectedEstablishment.id).then(res => {
           setExpenses(res);
           setLoading(false);
+          fetchExpenses(1, currentlyUser.user.establishments[0].id).then(
+            newRes => {
+              setExpenses(newRes);
+              setLoading(false);
+            }
+          );
         });
         toast.success('Despesa cadastrada!');
         setShow(false);
@@ -263,59 +296,81 @@ const Expenses = () => {
             <Modal.Title>Cadastro de despesa</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form.Row>
-              <Form.Group as={Col} xs={12}>
-                <LabelStyled>Nome</LabelStyled>
-                <Form.Control
-                  type="text"
-                  placeholder="Digite o nome"
-                  name="name"
-                  required
-                  value={formValues?.name || ''}
-                  onChange={e =>
-                    setFormValues({ ...formValues, name: e.target.value })
-                  }
-                />
-              </Form.Group>
+            <form>
+              <Form.Row>
+                <Form.Group as={Col} xs={12}>
+                  <LabelStyled>Nome</LabelStyled>
+                  <Form.Control
+                    type="text"
+                    placeholder="Digite o nome"
+                    name="name"
+                    required
+                    value={formValues?.name || ''}
+                    onChange={e =>
+                      setFormValues({ ...formValues, name: e.target.value })
+                    }
+                  />
+                </Form.Group>
 
-              <Form.Group as={Col} xs={12}>
-                <LabelStyled>Valor da despesa</LabelStyled>
-                <CurrencyInput
-                  className="form-control"
-                  placeholder="Digite o valor da despesa"
-                  name="value"
-                  required
-                  value={formValues?.value || ''}
-                  onChange={e =>
-                    setFormValues({
-                      ...formValues,
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group>
-              <Form.Group as={Col} xs={12}>
-                <LabelStyled>Estabelecimento</LabelStyled>
-                <Select
-                  options={establishments}
-                  value={formValues?.establishment || formValues?.Establishment}
-                  onChange={e =>
-                    setFormValues({ ...formValues, establishment_id: e.value })
-                  }
-                  placeholder="Selecione o estabelecimento"
-                />
-              </Form.Group>
-            </Form.Row>
+                <Form.Group as={Col} xs={12}>
+                  <LabelStyled>Valor da despesa</LabelStyled>
+                  <CurrencyInput
+                    className="form-control"
+                    placeholder="Digite o valor da despesa"
+                    name="value"
+                    required
+                    value={formValues?.value || ''}
+                    onChange={e =>
+                      setFormValues({
+                        ...formValues,
+                        value: e.target.value,
+                      })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group as={Col} xs={12}>
+                  <LabelStyled>Estabelecimento</LabelStyled>
+                  <Select
+                    options={establishments}
+                    value={
+                      formValues?.establishment || formValues?.Establishment
+                    }
+                    onChange={e =>
+                      setFormValues({
+                        ...formValues,
+                        establishment_id: e.value,
+                      })
+                    }
+                    placeholder="Selecione o estabelecimento"
+                  />
+                </Form.Group>
+              </Form.Row>
+            </form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShow(false)}>
+            <Button variant="light" onClick={() => setShow(false)}>
               Cancelar
             </Button>
-            <Button variant="primary" onClick={handleSubmit}>
+            <Button
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={
+                !formValues.establishment ||
+                !formValues.value ||
+                !formValues.name
+              }
+            >
               Cadastrar
             </Button>
           </Modal.Footer>
         </Modal>
+        <ExcludeModal
+          show={showDelete}
+          setShow={setShowDelete}
+          route="expense"
+          id={selectedDelete}
+          onClose={onClose}
+        />
       </main>
     </div>
   );

@@ -42,7 +42,21 @@ function AvailableAgenda({ doctorId, doctorInfo }) {
     []
   );
 
-  const fetchMonthSchedules = async (date = new Date()) => {
+  const debounce = (func, wait) => {
+    let timeout;
+
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
+
+  const fetchMonthSchedules = debounce(async (date = new Date()) => {
     try {
       const { data } = await api.get(
         `/doctor/${doctorId}/available?date=${date}`,
@@ -59,10 +73,10 @@ function AvailableAgenda({ doctorId, doctorInfo }) {
     } catch (err) {
       toast.error(err?.response?.data?.error);
     }
-  };
+  }, 1000);
 
-  function fetchData() {
-    fetchMonthSchedules(new Date().getTime());
+  function fetchData(date = new Date()) {
+    fetchMonthSchedules(date.getTime());
   }
 
   useEffect(fetchData, []);
@@ -90,7 +104,7 @@ function AvailableAgenda({ doctorId, doctorInfo }) {
       toast.error(error?.response?.data?.error);
     }
     setShow(false);
-    fetchData();
+    fetchData(new Date(clickedEvent.start));
   };
 
   return (
@@ -103,6 +117,22 @@ function AvailableAgenda({ doctorId, doctorInfo }) {
         onSelectEvent={e => handleClickEvent(e)}
         endAccessor="end"
         style={{ height: 'calc(100vh' }}
+        eventPropGetter={event => {
+          const newStyle = {
+            color: 'white',
+            border: '1px solid #424242',
+          };
+          if (event.title === 'Não disponível') {
+            newStyle.backgroundColor = '#ffa000';
+          } else {
+            newStyle.backgroundColor = '#4caf50';
+          }
+
+          return {
+            className: '',
+            style: newStyle,
+          };
+        }}
         messages={messages[0]}
         defaultView={window.innerWidth > 768 ? 'day' : 'list'}
         onNavigate={(date, view) => handleChangeMonth(date, view)}
@@ -123,7 +153,7 @@ function AvailableAgenda({ doctorId, doctorInfo }) {
           horário de <strong>{clickedEvent?.time}</strong>?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShow(false)}>
+          <Button variant="light" onClick={() => setShow(false)}>
             Cancelar
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
