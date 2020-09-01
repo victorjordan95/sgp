@@ -27,6 +27,7 @@ import authToken from '../utils/authToken';
 
 import AvatarPicture from './AvatarPicture';
 import LabelStyled from '../styles/LabelForm';
+import StyledSelect from '../styles/StyledSelect';
 
 import userContext from '../store/UserContext';
 import Roles from '../enums/Roles.enum';
@@ -231,6 +232,8 @@ function Header() {
   const userRole = currentlyUser?.user?.Role?.role;
 
   const [toggle, setToggle] = useState(window.innerWidth <= 1024);
+  const [establishments, setEstablishments] = useState([]);
+  const [selectedEstablishment, setSelectedEstablishment] = useState([]);
   const [notifications, setNotifications] = useState(0);
   const [showModal, setShowModal] = useState(false);
 
@@ -240,12 +243,14 @@ function Header() {
 
 Faça seu cadastro no link abaixo para começar utilizar e acompanhar seus agendamentos!
 
-http://salutii.app.br`,
+http://salutii.app.br?estabId=${selectedEstablishment.value}`,
     ],
-    [currentlyUser]
+    [currentlyUser, selectedEstablishment]
   );
 
   useEffect(() => {
+    setEstablishments(currentlyUser?.user?.establishments);
+    setSelectedEstablishment(currentlyUser?.user?.establishments[0]);
     if (userRole !== Roles.PATIENT) {
       // fetchNotifications().then(res => {
       //   setNotifications(res.data);
@@ -440,7 +445,14 @@ http://salutii.app.br`,
           </Modal.Header>
           <Modal.Body>
             <Form.Group controlId="exampleForm.ControlTextarea1">
-              <LabelStyled>Convite</LabelStyled>
+              <LabelStyled>Estabelecimento</LabelStyled>
+              <StyledSelect
+                options={establishments}
+                value={selectedEstablishment}
+                onChange={e => setSelectedEstablishment(e)}
+                placeholder="Selecione o estabelecimento"
+                className="mb-4"
+              />
               <Form.Control
                 as="textarea"
                 readOnly

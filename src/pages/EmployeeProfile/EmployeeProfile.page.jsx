@@ -258,6 +258,7 @@ function EmployeeProfile(props) {
                       <Form.Control
                         type="text"
                         placeholder="Digite o complemento"
+                        maxlength="80"
                         name="complement"
                         value={
                           formValues?.complement ||

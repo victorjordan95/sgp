@@ -344,7 +344,8 @@ function Profile() {
                         required
                         value={
                           formValues?.zipcode ||
-                          (currentlyUser?.user?.address_pk?.zipcode).toString()
+                          currentlyUser?.user?.address_pk?.zipcode?.toString() ||
+                          ''
                         }
                         onChange={e =>
                           setFormValues({
@@ -404,6 +405,7 @@ function Profile() {
                       <Form.Control
                         type="text"
                         placeholder="Digite o complemento"
+                        maxlength="80"
                         name="complement"
                         value={
                           formValues?.complement ||

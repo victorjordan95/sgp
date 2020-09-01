@@ -270,6 +270,7 @@ const Expenses = () => {
                   type="text"
                   placeholder="Digite o nome"
                   name="name"
+                  required
                   value={formValues?.name || ''}
                   onChange={e =>
                     setFormValues({ ...formValues, name: e.target.value })
@@ -278,11 +279,12 @@ const Expenses = () => {
               </Form.Group>
 
               <Form.Group as={Col} xs={12}>
-                <LabelStyled>Valor da consulta</LabelStyled>
+                <LabelStyled>Valor da despesa</LabelStyled>
                 <CurrencyInput
                   className="form-control"
                   placeholder="Digite o valor da despesa"
                   name="value"
+                  required
                   value={formValues?.value || ''}
                   onChange={e =>
                     setFormValues({

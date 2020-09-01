@@ -270,7 +270,7 @@ function RegisterEmployee() {
                       <LabelStyled>Complemento</LabelStyled>
                       <Form.Control
                         type="text"
-                        placeholder="Digite o complemento"
+                        placeholder="Digite o complemento" maxlength="80"
                         name="complement"
                         value={formValues?.complement || ''}
                         onChange={e =>
