@@ -11,14 +11,18 @@ import userContext from './store/UserContext';
 
 import GlobalStyle from './styles/global';
 
-function App(props) {
+function App() {
   const [loggedUser, setLoggedUser] = useState({});
   const [contextValue, setContextValue] = useState({});
 
-  const logout = () => {
+  const logout = async () => {
+    setLoggedUser({});
+    const token = localStorage.getItem('sgp-token');
+    await api.delete(`/sessionToken/${token}`, {
+      session_token: token,
+    });
     localStorage.removeItem('sgp-token');
     localStorage.removeItem('userEstabs');
-    setLoggedUser({});
   };
 
   const handleUserContext = user => {
@@ -46,11 +50,11 @@ function App(props) {
             });
 
             const userData = await api.get(
-              `/users/${user.data.user.id}`,
+              `/users/${user?.data?.sessionUser?.user_id}`,
               authToken()
             );
             const estabs = await api.get(
-              `establishment?userId=${user.data.user.id}`,
+              `establishment?userId=${user?.data?.sessionUser?.user_id}`,
               authToken()
             );
 

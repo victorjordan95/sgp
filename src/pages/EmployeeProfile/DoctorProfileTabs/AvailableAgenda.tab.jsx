@@ -8,6 +8,7 @@ import 'moment/locale/pt-br';
 import userContext from '../../../store/UserContext';
 import api from '../../../services/api';
 import authToken from '../../../utils/authToken';
+import debounce from '../../../utils/debounce';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import StyledCalendar from '../../../styles/StyledCalendar';
@@ -41,20 +42,6 @@ function AvailableAgenda({ doctorId, doctorInfo }) {
     ],
     []
   );
-
-  const debounce = (func, wait) => {
-    let timeout;
-
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  };
 
   const fetchMonthSchedules = debounce(async (date = new Date()) => {
     try {

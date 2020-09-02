@@ -20,6 +20,7 @@ import authToken from '../../utils/authToken';
 import Roles from '../../enums/Roles.enum';
 import AppointmentStatus from '../../enums/AppointmentStatus.enum';
 import paymentStatusAppointment from '../../utils/paymentStatusAppointment';
+import debounce from '../../utils/debounce';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
@@ -181,7 +182,7 @@ function Agenda() {
 
   const handleChangeMonth = (date, view) => {
     setCurrentDate(date);
-    if (view === 'month') fetchMonthSchedules(date);
+    if (view === 'month') debounce(fetchMonthSchedules(date), 1000);
   };
 
   const handleSubmit = async () => {

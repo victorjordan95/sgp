@@ -40,7 +40,7 @@ const fetchUsers = async (page = 1) => {
 const fetchEmployees = async (page = 1, type = '', name = '') => {
   let findUrl = '';
   if (name) {
-    findUrl = `?page=${page}&type=${type}&name=${name}`;
+    findUrl = `?page=${page}&type=${type}&searchField=${name}`;
   } else {
     findUrl = `?page=${page}`;
   }

@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
 import userContext from '../../store/UserContext';
+import debounce from '../../utils/debounce';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Header from '../../components/Header';
@@ -116,7 +117,7 @@ function Appointment() {
   };
 
   const handleChangeMonth = (date, view) => {
-    if (view === 'month') fetchMonthSchedules(date);
+    if (view === 'month') debounce(fetchMonthSchedules(date), 1000);
   };
 
   return (
