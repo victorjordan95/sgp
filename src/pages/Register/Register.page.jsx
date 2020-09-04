@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+import * as yup from 'yup';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import InputMask from 'react-input-mask';
 import Select from 'react-select';
@@ -62,9 +62,39 @@ function Register(props) {
     }
   };
 
+  const userSchema = yup.object().shape({
+    cellphone: yup.string().required(),
+    city: yup.string().required(),
+    complement: yup.string().notRequired(),
+    country: yup.string().required(),
+    cpf: yup.string().required(),
+    email: yup
+      .string()
+      .email()
+      .required(),
+    name: yup.string().required(),
+    number: yup.string().required(),
+    password: yup.string().required(),
+    phone: yup.string().required(),
+    rg: yup.string().required(),
+    role: yup
+      .number()
+      .required()
+      .positive()
+      .integer(),
+    state: yup.string().required(),
+    street: yup.string().required(),
+    zipcode: yup.string().required(),
+  });
+
   const handleSubmit = async e => {
     e.preventDefault();
     const [, estab] = window.location.search.split('?establishment=');
+
+    if (formValues.password !== formValues.passwordConfirm) {
+      toast.error('Confirme a senha digitada!');
+      return false;
+    }
 
     const user = {
       name: formValues.name,
@@ -82,15 +112,22 @@ function Register(props) {
       country: 'BR',
       establishments: [Number(estab)],
       role: 4,
+      zipcode: formValues?.zip,
     };
 
-    try {
-      await api.post('/users', user);
-      toast.success('Usuário criado com sucesso!');
-      props.history.push('/');
-    } catch (err) {
-      toast.error(err?.response?.data?.error);
+    const isValid = await userSchema.isValid(user);
+    if (isValid) {
+      try {
+        await api.post('/users', user);
+        toast.success('Usuário criado com sucesso!');
+        props.history.push('/');
+      } catch (err) {
+        toast.error(err?.response?.data?.error);
+      }
+    } else {
+      toast.error('Dado inválido!');
     }
+
     setLoading(false);
   };
 
@@ -166,6 +203,17 @@ function Register(props) {
                       })
                     }
                   />
+                  <div
+                    className="invalid-feedback"
+                    style={{
+                      display:
+                        formValues?.passwordConfirm !== formValues?.password
+                          ? 'block'
+                          : 'none',
+                    }}
+                  >
+                    Senhas informadas não são iguais!
+                  </div>
                 </Form.Group>
               </Form.Row>
 
@@ -191,6 +239,7 @@ function Register(props) {
                     mask="(99)99999-9999"
                     className="form-control"
                     type="text"
+                    required
                     placeholder="Digite seu celular"
                     name="cellphone"
                     value={formValues?.cellphone || ''}
@@ -307,6 +356,7 @@ function Register(props) {
                   <LabelStyled>Bairro</LabelStyled>
                   <Form.Control
                     type="text"
+                    required
                     placeholder="Digite o bairro"
                     name="neighborhood"
                     disabled={fieldDisabled}
@@ -328,6 +378,7 @@ function Register(props) {
                     type="text"
                     placeholder="Digite sua cidade"
                     name="city"
+                    required
                     disabled={fieldDisabled}
                     value={formValues?.city || ''}
                     onChange={e =>
@@ -341,6 +392,7 @@ function Register(props) {
                   <Select
                     disabled={fieldDisabled}
                     options={stateValues}
+                    required
                     value={formValues?.state}
                     onChange={e => setFormValues({ ...formValues, state: e })}
                     placeholder="Selecione seu estado"

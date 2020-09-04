@@ -31,9 +31,9 @@ import LabelStyled from '../../styles/LabelForm';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const StyledMain = styled.main`
-  display: inline-flex;
+  /* display: inline-flex;
   height: 100vh;
-  width: calc(100vw - 250px);
+  width: calc(100vw - 250px); */
 `;
 
 const SelectStyled = styled(Select)`

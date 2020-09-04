@@ -13,16 +13,16 @@ const ContactParagraph = styled.div`
 `;
 
 export default ({ data }) => {
-  if (data.patient) {
+  if (data?.patient) {
     return (
       <ContactParagraph>
         <p>
           <b>Telefone:</b>
-          {data.patient.Contact.phone}
+          {data.patient?.Contact?.phone}
         </p>
         <p>
           <b>Celular:</b>
-          {data.patient.Contact.cellphone}
+          {data?.patient?.Contact?.cellphone}
         </p>
       </ContactParagraph>
     );

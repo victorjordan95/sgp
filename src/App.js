@@ -41,7 +41,12 @@ function App() {
     const token = localStorage.getItem('sgp-token');
     const location = window.location.pathname;
 
-    if (token || location === '/login' || location === '/') {
+    if (
+      token ||
+      location === '/login' ||
+      location === '/' ||
+      location.includes('cadastro')
+    ) {
       if (token) {
         try {
           (async function fetchUser() {

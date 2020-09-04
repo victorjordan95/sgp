@@ -30,7 +30,8 @@
     "react-time-picker": "^4.0.1",
     "react-toastify": "^6.0.5",
     "recharts": "^1.8.5",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "dev": "react-scripts start",

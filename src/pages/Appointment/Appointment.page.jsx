@@ -62,7 +62,7 @@ function Appointment() {
 
   const currentlyUser = useContext(userContext);
 
-  const [schedules, setSchedules] = useState();
+  const [schedules, setSchedules] = useState([]);
   const [scheduleToday, setScheduleToday] = useState();
   const [myPosition, setMyPosition] = useState();
   const [loading, setLoading] = useState(false);

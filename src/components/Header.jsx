@@ -243,7 +243,7 @@ function Header() {
 
 Faça seu cadastro no link abaixo para começar utilizar e acompanhar seus agendamentos!
 
-http://salutii.app.br?estabId=${selectedEstablishment?.value}`,
+http://salutii.app.br/cadastro?estabId=${selectedEstablishment?.value}`,
     ],
     [currentlyUser, selectedEstablishment]
   );
