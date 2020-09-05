@@ -10,9 +10,14 @@ const paginationComponentOptions = {
   selectAllRowsItemText: 'Todos',
 };
 
+const defaultClicked = e => {
+  return false;
+};
+
 function UsersTable({
   data,
   columns,
+  onRowClicked = defaultClicked,
   count,
   hasNext,
   hasPrevious,
@@ -20,11 +25,13 @@ function UsersTable({
   amountPerPage = 10,
   expandableRows = false,
   subHeader = false,
+  isClickable = false,
   subHeaderComponent,
   expandableRowsComponent,
 }) {
   return (
     <DataTable
+      style={{ cursor: isClickable ? 'pointer' : 'default' }}
       noHeader
       striped
       responsive
@@ -34,11 +41,12 @@ function UsersTable({
       minWidth="30"
       expandableRows={expandableRows}
       paginationServer
-      noDataComponent={<p>Nenhum dado cadastrado!</p>}
+      noDataComponent={<p className="mt-5">Nenhum dado cadastrado!</p>}
       paginationComponentOptions={paginationComponentOptions}
       paginationTotalRows={data?.count}
       onChangePage={handlePageChange}
       paginationPerPage={amountPerPage}
+      onRowClicked={onRowClicked}
       subHeader={subHeader}
       subHeaderComponent={subHeaderComponent}
       subHeaderAlign="left"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
@@ -66,9 +66,14 @@ const fetchUsers = async (page, userEstab) => {
 
 const Doctors = () => {
   const userEstabs = localStorage.getItem('userEstabs');
+  const history = useHistory();
 
   const [users, setUsers] = useState();
   const [loading, setLoading] = useState(true);
+
+  const handleLineClick = e => {
+    history.push(`/medico/${e.id}`);
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -102,6 +107,8 @@ const Doctors = () => {
                 data={users}
                 columns={columns}
                 handlePageChange={handlePageChange}
+                onRowClicked={handleLineClick}
+                isClickable
               />
             </Col>
           </Row>
