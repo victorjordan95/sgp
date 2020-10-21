@@ -13,6 +13,7 @@ import Establishment from './pages/Establishment/Establishment.page';
 import EditEstablishment from './pages/Establishment/EditEstablishment.page';
 import EstablishmentList from './pages/Establishment/EstablishmentList.page';
 import Expenses from './pages/Expenses/Expenses.page';
+import LandingPage from './pages/LandingPage/LandingPage.page';
 import Login from './pages/Login/Login.page';
 import Profile from './pages/Profile/Profile.page';
 import Patients from './pages/Patients/Patients.page';
@@ -26,7 +27,7 @@ export default function Routes() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact component={Login} />
+        <Route path="/" exact component={LandingPage} />
         <Route path="/agenda" component={Agenda} />
         <Route path="/cadastro" component={Register} />
         <Route path="/cadastro-funcionario" component={RegisterEmployee} />

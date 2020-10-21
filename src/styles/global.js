@@ -14,9 +14,12 @@ export default createGlobalStyle`
     font-family: 'Lato', sans-serif;
   } */
   .btn-primary {
-    color: #fff;
+    align-items: center;
     background-color: #009688;
     border-color: #009688;
+    display: flex;
+    justify-content: center;
+    color: #fff;
     height: 40px;
     &:hover {
       background-color: #00897b;

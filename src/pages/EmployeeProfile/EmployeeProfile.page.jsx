@@ -62,6 +62,7 @@ function EmployeeProfile(props) {
       role: [
         formValues?.role?.id ? formValues?.role?.id : formValues?.Role?.id,
       ],
+      establishments: formValues?.establishments?.map(el => el.id),
       complement: formValues.complement,
       city: formValues.city,
       state: formValues?.state?.value
@@ -321,11 +322,14 @@ function EmployeeProfile(props) {
                       <LabelStyled>Estabelecimento</LabelStyled>
                       <Select
                         options={establishments}
-                        value={formValues?.establishments}
+                        value={
+                          formValues?.establishments ||
+                          currentlyUser?.user?.establishments
+                        }
                         isMulti
                         isDisabled={!isAdmin}
                         onChange={e =>
-                          setFormValues({ ...formValues, establishment: e })
+                          setFormValues({ ...formValues, establishments: e })
                         }
                         placeholder="Selecione o estabelecimento"
                       />
