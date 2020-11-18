@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
+import {
+  FiMapPin,
+  FiPhone
+} from 'react-icons/fi';
 
 import api from '../../services/api';
 import authToken from '../../utils/authToken';
@@ -32,7 +36,7 @@ const siteMap = [
 
 const fetchUser = async id => {
   try {
-    const result = await api.get(`/users/${id}`, authToken());
+    const result = await api.get(`/doctors/${id}`, authToken());
     return result.data;
   } catch (err) {
     toast.error(err?.response?.data?.error);
@@ -41,14 +45,15 @@ const fetchUser = async id => {
 };
 
 function EmployeeProfile(props) {
-  const [formValues, setFormValues] = useState({});
+  const [doctorValues, setDoctorValues] = useState({});
   const [loading, setLoading] = useState(false);
 
   function fetchData() {
     setLoading(false);
     const { id } = props.match.params;
     fetchUser(id).then(res => {
-      setFormValues(res);
+      setDoctorValues(res);
+      console.log(res);
     });
   }
 
@@ -57,41 +62,94 @@ function EmployeeProfile(props) {
   return loading ? (
     <Loader />
   ) : (
-    <>
-      <Header />
-      <main>
-        <Container>
-          <Row>
-            <Breadcrumb siteMap={siteMap} />
-            <Col xs={12}>
-              <h2>{formValues.name}</h2>
-            </Col>
-            <AvatarPicture
-              path={formValues?.avatar?.url}
-              size="medium"
-              description={`Foto de perfil de ${formValues?.name}`}
-            />
-          </Row>
-          <StyledRow>
-            <StyledTabs defaultActiveKey="profile">
-              <Tab eventKey="agenda" title="Agenda disponível">
-                <AvailableAgenda
-                  doctorId={props.match.params.id}
-                  doctorInfo={formValues}
-                />
-              </Tab>
-              <Tab eventKey="profile" title="Perfil">
-                <p>1</p>
-              </Tab>
-              <Tab eventKey="contact" title="Contato" disabled>
-                <p>1</p>
-              </Tab>
-            </StyledTabs>
-          </StyledRow>
-        </Container>
-      </main>
-    </>
-  );
+      <>
+        <Header />
+        <main>
+          <Container>
+            <Row>
+              <Breadcrumb siteMap={siteMap} />
+              <Col xs={12}>
+                <h2>{doctorValues.name}</h2>
+                <h6>
+                  {doctorValues?.doctor_info?.ProfessionalCoucil?.name} -{' '}
+                  {doctorValues?.doctor_info?.ProfessionalCoucil?.value}
+                </h6>
+              </Col>
+              <AvatarPicture
+                path={doctorValues?.avatar?.url}
+                size="medium"
+                description={`Foto de perfil de ${doctorValues?.name}`}
+              />
+            </Row>
+            <StyledRow>
+              <StyledTabs defaultActiveKey="profile">
+                <Tab eventKey="profile" title="Perfil">
+                  <section>
+                    <div className="d-block mb-3">
+                      <span className="mr-3">Especialidade: </span>
+                      {doctorValues?.doctor_info?.categories.map(category => (
+                        <span
+                          className="badge badge-info ml-2 mr-2"
+                          key={category?.id}
+                        >
+                          {category?.name}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="d-block mb-3">
+                      <span className="mr-3">Horário atendimento: </span>
+                      <span className="font-weight-bold">
+                        {doctorValues?.doctor_info?.start_hour}
+                      </span>{' '}
+                    -{' '}
+                      <span className="font-weight-bold">
+                        {doctorValues?.doctor_info?.end_hour}
+                      </span>
+                    </div>
+
+                    <div className="d-block mb-3">
+                      <span className="mr-3">Tempo consulta: </span>
+                      <span className="font-weight-bold">
+                        {doctorValues?.doctor_info?.time_appointment}
+                      </span>
+                    </div>
+                  </section>
+                </Tab>
+                <Tab eventKey="local" title="Local de atendimento">
+                  {doctorValues?.establishments?.map(estab => (
+                    <section className="doctor-clinic mb-4">
+                      <h4>{estab?.name}</h4>
+                      <p className="d-flex align-items-center">
+                        <FiMapPin size={18} className="mr-2" />
+                        <span>{estab?.address_pk?.full_address}</span>
+                      </p>
+
+                      <p className="d-flex align-items-center mb-0">
+                        <FiPhone size={18} className="mr-2" />
+                        <span>{estab?.Contact?.phone}</span>
+                      </p>
+
+                      <p className="d-flex align-items-center">
+                        <FiPhone size={18} className="mr-2" />
+                        <span>{estab?.Contact?.cellphone}</span>
+                      </p>
+                      <hr />
+                    </section>
+                  ))}
+                </Tab>
+                <Tab eventKey="agenda" title="Agenda disponível">
+                  <AvailableAgenda
+                    doctorId={props?.match?.params?.id}
+                    doctorInfo={doctorValues}
+                  />
+                </Tab>
+              </StyledTabs>
+            </StyledRow>
+          </Container>
+        </main>
+      </>
+    );
 }
 
 export default EmployeeProfile;

@@ -1,5 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  FiPieChart,
+  FiCalendar,
+  FiCloud,
+  FiBell,
+  FiSmile,
+  FiSmartphone,
+} from 'react-icons/fi';
 import { StyledLandingPage } from './StyledLandingPage.style';
 
 import mobileImgBanner from '../../assets/img/header-mobile.png';
@@ -74,37 +82,44 @@ function LandingPage(props) {
           <div className="row">
             <div className="col-xs-12 col-sm-8 offset-sm-2 mb-40">
               <div className="page-title text-center">
-                <h5 className="title text-center">Features</h5>
+                <h5 className="title text-center">Funcionalidades</h5>
                 <div className="space-10 text-center" />
-                <h3>Pwoerful Features As Always</h3>
+                <h3>Funcionalidades para sua gestão simplificada!</h3>
                 <div className="space-60" />
               </div>
             </div>
           </div>
           <div className="row">
             <div className="col-xs-12 col-sm-6 col-md-4">
-              <div className="service-box wow fadeInUp" data-wow-delay="0.2s">
-                <div className="box-icon">
-                  <i className="lnr lnr-rocket" />
-                </div>
-                <h4>Fast &amp; Powerful</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-              </div>
-              <div className="space-60" />
               <div className="service-box wow fadeInUp" data-wow-delay="0.4s">
                 <div className="box-icon">
-                  <i className="lnr lnr-paperclip" />
+                  <FiPieChart size={20} />
                 </div>
-                <h4>Easily Editable</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                <h4>Gráficos relevantes</h4>
+                <p>Tenha em suas mãos gráficos para ajudar em sua gestão!</p>
               </div>
               <div className="space-60" />
               <div className="service-box wow fadeInUp" data-wow-delay="0.6s">
                 <div className="box-icon">
-                  <i className="lnr lnr-cloud-download" />
+                  <FiCalendar size={20} />
                 </div>
-                <h4>Cloud Storage</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                <h4>Gestão de Agendamentos</h4>
+                <p>
+                  Faça agendamentos para pacientes, aceite solicitações de
+                  agendamento, veja os dias disponíveis, você tem total
+                  flexibilidade!
+                </p>
+              </div>
+              <div className="space-60" />
+              <div className="service-box wow fadeInUp" data-wow-delay="0.6s">
+                <div className="box-icon">
+                  <FiCloud size={20} />
+                </div>
+                <h4>Armazenamento em Nuvem</h4>
+                <p>
+                  Tenha a segurança de seus dados estarem sempre salvos em um
+                  local seguro!
+                </p>
               </div>
               <div className="space-60" />
             </div>
@@ -116,27 +131,37 @@ function LandingPage(props) {
             <div className="col-xs-12 col-sm-6 col-md-4">
               <div className="service-box wow fadeInUp" data-wow-delay="0.2s">
                 <div className="box-icon">
-                  <i className="lnr lnr-clock" />
+                  <FiBell size={20} />
                 </div>
-                <h4>Easy Notifications</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                <h4>Notificações</h4>
+                <p>
+                  Com Salutii, seu paciente sabe quantas pessoas estão na frente
+                  e recebem notificações auxiliares!
+                </p>
+              </div>
+              <div className="space-60" />
+              <div className="service-box wow fadeInUp" data-wow-delay="0.2s">
+                <div className="box-icon">
+                  <FiSmile size={20} />
+                </div>
+                <h4>Simples e prático</h4>
+                <p>
+                  Sem ficar dando voltas para realizar uma ação, vá direto ao
+                  ponto!
+                </p>
               </div>
               <div className="space-60" />
               <div className="service-box wow fadeInUp" data-wow-delay="0.4s">
                 <div className="box-icon">
-                  <i className="lnr lnr-laptop-phone" />
+                  <FiSmartphone size={20} />
                 </div>
-                <h4>Fully Responsive</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                <h4>Totalmente responsivo</h4>
+                <p>
+                  Acesse o mesmo sistema, seja pelo celular, tablet ou
+                  computador!
+                </p>
               </div>
               <div className="space-60" />
-              <div className="service-box wow fadeInUp" data-wow-delay="0.6s">
-                <div className="box-icon">
-                  <i className="lnr lnr-cog" />
-                </div>
-                <h4>Editable Layout</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-              </div>
               <div className="space-60" />
             </div>
           </div>
@@ -147,7 +172,7 @@ function LandingPage(props) {
         <div className="container">
           <div className="row mb-5">
             <div className="col-12 offset-md-2 col-md-8">
-              <h1 className="display-4 text-center">Pricing</h1>
+              <h1 className="display-4 text-center">Valores</h1>
               <p className="lead text-center">
                 Quickly build an effective pricing table for your potential
                 customers with this Bootstrap example. It's built with default

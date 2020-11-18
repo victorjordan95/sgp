@@ -214,6 +214,10 @@ export const StyledLandingPage = styled.div`
 
   .team-slide .owl-controls .owl-nav > div,
   .service-box .box-icon {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     left: 0;
     top: 0;
@@ -321,5 +325,9 @@ export const StyledLandingPage = styled.div`
 
   .mb-40 {
     margin-bottom: 40px;
+  }
+
+  .space-60 {
+    margin: 60px 0;
   }
 `;
