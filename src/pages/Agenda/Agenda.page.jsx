@@ -11,6 +11,7 @@ import { momentLocalizer } from 'react-big-calendar';
 import { toast } from 'react-toastify';
 import Select from 'react-select';
 import moment from 'moment';
+import { NavLink } from 'react-router-dom';
 import CurrencyInput from 'react-currency-masked-input';
 import 'moment/locale/pt-br';
 
@@ -130,6 +131,7 @@ function Agenda() {
         `/doctors?userEstab=${userEstabs}`,
         authToken()
       );
+      console.log(result.data);
       return result.data;
     } catch (err) {
       toast.error(err?.response?.data?.error);
@@ -245,157 +247,162 @@ function Agenda() {
       <StyledMain>
         <Container fluid>
           <Row>
-            <Breadcrumb siteMap={siteMap} />
-            <Col xs={12} md={4} className="mb-4">
-              {doctors && (
-                <SelectStyled
-                  options={doctors}
-                  value={selectedDoctor}
-                  onChange={e => handleChangeDoctor(e)}
-                  placeholder="Selecione um médico"
-                />
-              )}
-            </Col>
-            <Col xs={12}>
-              {schedules && (
-                <StyledCalendar
-                  localizer={localizer}
-                  events={schedules}
-                  selectable
-                  startAccessor="start"
-                  endAccessor="end"
-                  onSelectEvent={e => handleSelectEvent(e)}
-                  onSelectSlot={e => handleClickEvent(e)}
-                  views={['day', 'week', 'month']}
-                  eventPropGetter={event => {
-                    const newStyle = {
-                      color: 'white',
-                    };
-                    if (Number(event?.status) === AppointmentStatus.CANCELADO) {
-                      newStyle.backgroundColor = '#c62828';
-                    }
-                    if (Number(event?.status) === AppointmentStatus.REALIZADO) {
-                      newStyle.backgroundColor = '#4caf50';
-                    }
+            {doctors && <>
+              <Breadcrumb siteMap={siteMap} />
+              <Col xs={12} md={4} className="mb-4">
+                {doctors && (
+                  <SelectStyled
+                    options={doctors}
+                    value={selectedDoctor}
+                    onChange={e => handleChangeDoctor(e)}
+                    placeholder="Selecione um médico"
+                  />
+                )}
+              </Col>
+              <Col xs={12}>
+                {schedules && (
+                  <StyledCalendar
+                    localizer={localizer}
+                    events={schedules}
+                    selectable
+                    startAccessor="start"
+                    endAccessor="end"
+                    onSelectEvent={e => handleSelectEvent(e)}
+                    onSelectSlot={e => handleClickEvent(e)}
+                    views={['day', 'week', 'month']}
+                    eventPropGetter={event => {
+                      const newStyle = {
+                        color: 'white',
+                      };
+                      if (Number(event?.status) === AppointmentStatus.CANCELADO) {
+                        newStyle.backgroundColor = '#c62828';
+                      }
+                      if (Number(event?.status) === AppointmentStatus.REALIZADO) {
+                        newStyle.backgroundColor = '#4caf50';
+                      }
 
-                    return {
-                      className: '',
-                      style: newStyle,
-                    };
-                  }}
-                  style={{ height: 'calc(100vh' }}
-                  messages={messages[0]}
-                  defaultView={window.innerWidth > 768 ? 'month' : 'day'}
-                  onNavigate={(date, view) => handleChangeMonth(date, view)}
-                />
-              )}
-            </Col>
+                      return {
+                        className: '',
+                        style: newStyle,
+                      };
+                    }}
+                    style={{ height: 'calc(100vh' }}
+                    messages={messages[0]}
+                    defaultView={window.innerWidth > 768 ? 'month' : 'day'}
+                    onNavigate={(date, view) => handleChangeMonth(date, view)}
+                  />
+                )}
+              </Col>
+              <Modal
+                show={show}
+                onHide={() => setShow(false)}
+                backdrop="static"
+                keyboard={false}
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>Agendamento de consulta</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {doctors && (
+                    <Select
+                      options={patients}
+                      value={selectedPatient}
+                      onChange={e => setSelectedPatient(e)}
+                      placeholder="Selecione um paciente"
+                      className="mb-3"
+                    />
+                  )}
+              Deseja agendar uma consulta com{' '}
+                  <strong>{selectedDoctor?.label}</strong> no dia{' '}
+                  <strong>{moment(clickedEvent?.start).format('DD/MM/YYYY')}</strong>{' '}
+              no horário de{' '}
+                  <strong>{moment(clickedEvent?.start).format('hh:mm')}</strong> para
+              o paciente <strong>{selectedPatient?.label}</strong>?
+            </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="light" onClick={() => setShow(false)}>
+                    Cancelar
+              </Button>
+                  <Button variant="primary" onClick={handleSubmit}>
+                    Agendar
+              </Button>
+                </Modal.Footer>
+              </Modal>
+
+              <Modal
+                show={showInfo}
+                onHide={() => setShowInfo(false)}
+                backdrop="static"
+                keyboard={false}
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>Consulta de {clickedEvent?.title} </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form.Group as={Col}>
+                    <LabelStyled>Valor da consulta</LabelStyled>
+                    <CurrencyInput
+                      className="form-control"
+                      placeholder="Digite o valor da consulta"
+                      name="appointmentValue"
+                      onChange={e =>
+                        setFormValues({
+                          ...formValues,
+                          appointmentValue: e.target.value,
+                        })
+                      }
+                    />
+                  </Form.Group>
+
+                  <Form.Group as={Col}>
+                    <LabelStyled>Forma de pagamento</LabelStyled>
+                    <Select
+                      options={paymentStatusAppointment}
+                      onChange={e =>
+                        setFormValues({
+                          ...formValues,
+                          appointmentStatus: e.value,
+                        })
+                      }
+                      placeholder="Selecione uma forma de pagamento"
+                    />
+                  </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="default" onClick={() => setShowInfo(false)}>
+                    Cancelar
+            </Button>
+                  <Button
+                    variant="light"
+                    onClick={() =>
+                      handleRequest(
+                        AppointmentStatus.CANCELADO,
+                        'Agendamento cancelado!'
+                      )
+                    }
+                  >
+                    Cancelar agendamento
+            </Button>
+                  <Button
+                    variant="primary"
+                    onClick={() =>
+                      handleRequest(
+                        AppointmentStatus.REALIZADO,
+                        'Agendamento atualizado!'
+                      )
+                    }
+                  >
+                    Atendido
+            </Button>
+                </Modal.Footer>
+              </Modal>
+            </>
+            }
+            {!loading && !doctors && <p className="w-100 d-block text-center">Você não possui nenhum médico cadastrado. <NavLink to="/medicos">Cadastre um médico clicando aqui!</NavLink></p>}
+
           </Row>
         </Container>
 
-        <Modal
-          show={show}
-          onHide={() => setShow(false)}
-          backdrop="static"
-          keyboard={false}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Agendamento de consulta</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {doctors && (
-              <Select
-                options={patients}
-                value={selectedPatient}
-                onChange={e => setSelectedPatient(e)}
-                placeholder="Selecione um paciente"
-                className="mb-3"
-              />
-            )}
-            Deseja agendar uma consulta com{' '}
-            <strong>{selectedDoctor?.label}</strong> no dia{' '}
-            <strong>{moment(clickedEvent?.start).format('DD/MM/YYYY')}</strong>{' '}
-            no horário de{' '}
-            <strong>{moment(clickedEvent?.start).format('hh:mm')}</strong> para
-            o paciente <strong>{selectedPatient?.label}</strong>?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="light" onClick={() => setShow(false)}>
-              Cancelar
-            </Button>
-            <Button variant="primary" onClick={handleSubmit}>
-              Agendar
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal
-          show={showInfo}
-          onHide={() => setShowInfo(false)}
-          backdrop="static"
-          keyboard={false}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Consulta de {clickedEvent?.title} </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group as={Col}>
-              <LabelStyled>Valor da consulta</LabelStyled>
-              <CurrencyInput
-                className="form-control"
-                placeholder="Digite o valor da consulta"
-                name="appointmentValue"
-                onChange={e =>
-                  setFormValues({
-                    ...formValues,
-                    appointmentValue: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
-
-            <Form.Group as={Col}>
-              <LabelStyled>Forma de pagamento</LabelStyled>
-              <Select
-                options={paymentStatusAppointment}
-                onChange={e =>
-                  setFormValues({
-                    ...formValues,
-                    appointmentStatus: e.value,
-                  })
-                }
-                placeholder="Selecione uma forma de pagamento"
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="default" onClick={() => setShowInfo(false)}>
-              Cancelar
-            </Button>
-            <Button
-              variant="light"
-              onClick={() =>
-                handleRequest(
-                  AppointmentStatus.CANCELADO,
-                  'Agendamento cancelado!'
-                )
-              }
-            >
-              Cancelar agendamento
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() =>
-                handleRequest(
-                  AppointmentStatus.REALIZADO,
-                  'Agendamento atualizado!'
-                )
-              }
-            >
-              Atendido
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </StyledMain>
     </div>
   );

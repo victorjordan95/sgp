@@ -22,6 +22,7 @@ import RegisterEmployee from './pages/Register/RegisterEmployee.page';
 import RegisterEstablishment from './pages/Register/RegisterEstablishment.page';
 import RegisterPatient from './pages/Register/RegisterPatient.page';
 import RequestSchedule from './pages/RequestSchedule/RequestSchedule.page';
+import Reports from './pages/Reports/Reports.page';
 
 export default function Routes() {
   return (
@@ -51,6 +52,7 @@ export default function Routes() {
         <Route path="/minhas-consultas" component={Appointment} />
         <Route path="/pacientes" component={Patients} />
         <Route path="/requisicoes-consultas" component={RequestSchedule} />
+        <Route path="/relatorios" component={Reports} />
       </Switch>
     </BrowserRouter>
   );

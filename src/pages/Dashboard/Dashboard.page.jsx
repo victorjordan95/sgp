@@ -86,7 +86,7 @@ const renderActiveShape = props => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={payload.color}>
         {payload.name}
       </text>
       <Sector
@@ -96,7 +96,7 @@ const renderActiveShape = props => {
         outerRadius={outerRadius}
         startAngle={startAngle}
         endAngle={endAngle}
-        fill={fill}
+        fill={payload.color}
       />
       <Sector
         cx={cx}
@@ -105,19 +105,19 @@ const renderActiveShape = props => {
         endAngle={endAngle}
         innerRadius={outerRadius + 6}
         outerRadius={outerRadius + 10}
-        fill={fill}
+        fill={payload.color}
       />
       <path
         d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
+        stroke={payload.color}
         fill="none"
       />
-      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+      <circle cx={ex} cy={ey} r={2} fill={payload.color} stroke="none" />
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
-        fill="#333"
+        fill={payload.color}
       >
         {payload.name}
       </text>
@@ -210,7 +210,7 @@ function Dashboard() {
             <Col xs={12} md={6}>
               <ChartCard>
                 <h3>Consultas do dia</h3>
-                {apsMonth.length > 0 ? (
+                {apDays.length > 0 ? (
                   <ResponsiveContainer>
                     <PieChart>
                       <Pie
@@ -219,14 +219,14 @@ function Dashboard() {
                         data={apDays}
                         innerRadius={60}
                         outerRadius={80}
-                        fill="#8884d8"
+                        fill="#009688"
                         onMouseEnter={onPieEnterMonth}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p>Sem nenhum dado!</p>
-                )}
+                    <p>Sem nenhum dado!</p>
+                  )}
               </ChartCard>
             </Col>
 
@@ -242,14 +242,14 @@ function Dashboard() {
                         data={apsMonth}
                         innerRadius={60}
                         outerRadius={80}
-                        fill="#8884d8"
+                        fill="#009688"
                         onMouseEnter={onPieEnterMonth}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p>Sem nenhum dado!</p>
-                )}
+                    <p>Sem nenhum dado!</p>
+                  )}
               </ChartCard>
             </Col>
           </Row>
@@ -279,8 +279,8 @@ function Dashboard() {
                     </LineChart>
                   </>
                 ) : (
-                  <p>Sem nenhum dado!</p>
-                )}
+                    <p>Sem nenhum dado!</p>
+                  )}
               </ChartCard>
             </Col>
           </Row>

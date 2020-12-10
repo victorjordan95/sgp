@@ -1,7 +1,8 @@
 import TimePicker from 'react-time-picker';
 import styled from 'styled-components';
 
-const StyledDatepicker = styled(TimePicker)`
+const StyleTimePicker = styled(TimePicker)
+`
   .react-time-picker__wrapper {
     border: none;
   }
@@ -11,4 +12,4 @@ const StyledDatepicker = styled(TimePicker)`
   }
 `;
 
-export default StyledDatepicker;
+export default StyleTimePicker;
